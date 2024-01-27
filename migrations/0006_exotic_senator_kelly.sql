@@ -1,0 +1,1 @@
+ALTER TABLE "notebooks" DROP COLUMN IF EXISTS "in_trash";
