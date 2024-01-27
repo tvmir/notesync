@@ -1,0 +1,1 @@
+ALTER TABLE "files" ALTER COLUMN "content" SET DATA TYPE jsonb;
