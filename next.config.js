@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ['afqtzydwcjcvzkoivmze.supabase.co'],
+    domains: ['afqtzydwcjcvzkoivmze.supabase.co', 'lh3.googleusercontent.com'],
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.externals.push({

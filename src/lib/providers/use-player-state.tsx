@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   Dispatch,
   useEffect,
+  FC,
 } from 'react';
 
 interface PlayerState {
@@ -55,7 +56,9 @@ const playerReducer = (
   }
 };
 
-const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const PlayerProvider: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(playerReducer, {
     ids: [],
     activeId: undefined,
@@ -73,7 +76,7 @@ const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const usePlayer = () => {
+export const usePlayer = () => {
   const context = useContext(PlayerContext);
 
   if (!context) {
@@ -82,5 +85,3 @@ const usePlayer = () => {
 
   return context;
 };
-
-export { PlayerProvider, usePlayer };

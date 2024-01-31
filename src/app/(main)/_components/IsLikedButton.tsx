@@ -24,22 +24,22 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
   const { user } = useSupabaseUser();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!user?.id) return;
+  // useEffect(() => {
+  //   if (!user?.id) return;
 
-    const fetchUserSongData = async () => {
-      const { data, error } = await fetchLikedSong(user.id, songId);
+  //   const fetchUserSongData = async () => {
+  //     const { data, error } = await fetchLikedSong(user.id, songId);
 
-      console.log('LIKED SONGS: ' + data);
+  //     console.log('LIKED SONGS: ' + data);
 
-      // if (!error && data) setIsLiked(true);
-      if (!error && data) {
-        dispatch({ type: 'LIKE_SONG', payload: songId });
-      }
-    };
+  //     // if (!error && data) setIsLiked(true);
+  //     if (!error && data) {
+  //       dispatch({ type: 'LIKE_SONG', payload: songId });
+  //     }
+  //   };
 
-    fetchUserSongData();
-  }, [user?.id, songId]);
+  //   fetchUserSongData();
+  // }, [user?.id, songId]);
 
   // const handleLikeTrigger = async () => {
   //   if (!user) redirect('/');
@@ -77,7 +77,7 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
     if (!user) redirect('/');
 
     if (isLiked) {
-      const { error } = await removeLikedSong(user.id, songId);
+      const { error } = await removeLikedSong([...user.id], songId);
 
       if (error) {
         toast({

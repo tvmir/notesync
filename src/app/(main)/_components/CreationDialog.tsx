@@ -4,17 +4,18 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
+import { useModal } from '@/lib/providers/use-modal-state';
 import clsx from 'clsx';
 import { FC } from 'react';
 
 interface CreationDialogProps {
-  header?: string;
-  content?: React.ReactNode;
-  children: React.ReactNode;
-  description?: string;
+  header: string;
+  content: React.ReactNode;
+  children?: React.ReactNode;
+  description: string;
   className?: string;
+  defaultOpen?: boolean;
 }
 
 const CreationDialog: FC<CreationDialogProps> = ({
@@ -23,10 +24,12 @@ const CreationDialog: FC<CreationDialogProps> = ({
   children,
   description,
   className,
+  defaultOpen,
 }) => {
+  const { isOpen, setClose } = useModal();
+
   return (
-    <Dialog>
-      <DialogTrigger className={clsx('', className)}>{children}</DialogTrigger>
+    <Dialog open={isOpen || defaultOpen} onOpenChange={setClose}>
       <DialogContent className="block overflow-scroll w-full">
         <DialogHeader>
           <DialogTitle>{header}</DialogTitle>

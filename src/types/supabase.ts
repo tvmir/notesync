@@ -143,6 +143,7 @@ export interface Database {
           genre: string | null;
           id: string;
           image_file: string | null;
+          likes: string[] | null;
           song_file: string | null;
           track_name: string | null;
           user_id: string | null;
@@ -153,6 +154,7 @@ export interface Database {
           genre?: string | null;
           id?: string;
           image_file?: string | null;
+          likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
           user_id?: string | null;
@@ -163,6 +165,7 @@ export interface Database {
           genre?: string | null;
           id?: string;
           image_file?: string | null;
+          likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
           user_id?: string | null;

@@ -8,7 +8,7 @@ const Editor = dynamic(() => import('../../../../_components/Editor'), {
 
 const FilePage = ({ params }: { params: { fileId: string } }) => {
   return (
-    <div className="mt-40 max-w-[800px]">
+    <div className="pl-20 mt-40 max-w-[800px]">
       <Editor fileId={params.fileId} />
     </div>
   );

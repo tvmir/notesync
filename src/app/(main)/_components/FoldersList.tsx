@@ -10,6 +10,7 @@ import { PlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import SidebarDropdown from './SidebarDropdown';
+import { Separator } from '@/components/ui/separator';
 
 interface FoldersListProps {
   folders: Folder[];
@@ -69,7 +70,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
       },
     });
 
-    const { data, error } = await createFolder(initiatedFolder);
+    const { error } = await createFolder(initiatedFolder);
     if (error) {
       toast({
         title: 'Error',
@@ -85,7 +86,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
 
   return (
     <>
-      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-4 text-primary">
+      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-2 text-primary">
         <span className="text-primary/70 text-sm capitalize">Folders</span>
         <CustomTooltip message="Create Folder">
           <PlusIcon
@@ -95,6 +96,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
           />
         </CustomTooltip>
       </div>
+      <Separator className="mb-2" />
       <Accordion
         type="multiple"
         defaultValue={[folderId || '']}

@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { AuthUser } from '@supabase/supabase-js';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { FC } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';

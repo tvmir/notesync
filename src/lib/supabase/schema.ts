@@ -94,6 +94,7 @@ export const songs = pgTable('songs', {
     onUpdate: 'cascade',
   }),
   genre: text('genre'),
+  likes: uuid('likes').array(),
 });
 
 export const likedSongs = pgTable(

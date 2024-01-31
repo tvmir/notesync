@@ -11,93 +11,115 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import UserAvatar from './UserAvatar';
+import { User } from '@/types/supabase';
+import { createBrowserClient } from '@supabase/ssr';
+import { useToast } from '@/components/ui/use-toast';
+import { redirect, useRouter } from 'next/navigation';
+import { AuthUser } from '@supabase/supabase-js';
+import { useMobile } from '@/lib/providers/use-mobile-state';
 
 interface UserAccountProps {
-  user: any;
+  user: AuthUser;
 }
 
 const UserAccount: FC<UserAccountProps> = ({ user }) => {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const router = useRouter();
+  const { isMobile } = useMobile();
+  const { toast } = useToast();
 
-  // useEffect(() => {
-  //   const mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
-  //   const handleMobileChange = (event: any) => {
-  //     setIsMobile(event.matches);
-  //   };
+  const signOutWithGoogle = async () => {
+    const { error } = await supabase.auth.signOut();
 
-  //   mobileMediaQuery.addEventListener('change', handleMobileChange);
-  //   setIsMobile(mobileMediaQuery.matches);
+    if (error) {
+      toast({
+        title: 'There was a problem',
+        description:
+          'There was an error signing out with Google. Please try again.',
+        variant: 'destructive',
+      });
+    }
 
-  //   return () => {
-  //     mobileMediaQuery.removeEventListener('change', handleMobileChange);
-  //   };
-  // }, []);
+    router.refresh();
+    redirect('/');
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
-        {isMobile ? (
-          <UserAvatar
-            user={{
-              image: user?.image || null,
-            }}
-            isMobile={isMobile}
-            className="h-6 w-6"
-          />
-        ) : (
-          <UserAvatar
-            user={{
-              name: user?.name || null,
-              image: user?.image || null,
-            }}
-            className="h-8 w-8"
-          />
-        )}
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent
-        className={cn('bg-background mt-2 mr-4')}
-        align="end"
-      >
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            {user?.name && <p className="font-medium">{user?.name}</p>}
-            {user?.email && (
-              <p className="w-[200px] truncate text-sm text-primary">
-                {user?.email}
-              </p>
+    <>
+      <div className="flex items-center gap-2 ml-auto">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            {isMobile ? (
+              <UserAvatar
+                user={{
+                  user_metadata: {
+                    avatar_url: user.user_metadata?.avatar_url,
+                  },
+                }}
+                isMobile={isMobile}
+                className="h-4 w-4"
+              />
+            ) : (
+              <UserAvatar
+                user={{
+                  user_metadata: {
+                    name: user.user_metadata?.name,
+                    avatar_url: user.user_metadata?.avatar_url,
+                  },
+                }}
+                className="h-4 w-4"
+              />
             )}
-          </div>
-        </div>
+          </DropdownMenuTrigger>
 
-        <DropdownMenuSeparator />
+          <DropdownMenuContent
+            className={cn('bg-background mt-2 mr-4')}
+            align="end"
+          >
+            <div className="flex items-center justify-start gap-2 p-2">
+              <div className="flex flex-col space-y-1 leading-none">
+                {user.user_metadata?.name && (
+                  <p className="font-medium">{user.user_metadata?.name}</p>
+                )}
+                {user.email && (
+                  <p className="w-[200px] truncate text-sm text-primary">
+                    {user.email}
+                  </p>
+                )}
+              </div>
+            </div>
 
-        <DropdownMenuItem asChild>
-          <Link href="/">Home</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/settings">Settings</Link>
-        </DropdownMenuItem>
+            <DropdownMenuSeparator />
 
-        <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/">Home</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </DropdownMenuItem>
+            {/* <DropdownMenuItem asChild>
+                <Link href="/settings">Settings</Link>
+              </DropdownMenuItem> */}
 
-        <DropdownMenuItem
-          onSelect={(event) => {
-            event.preventDefault();
-            // signOut({
-            //   callbackUrl: `${window.location.origin}/signin}`,
-            // });
-          }}
-          className="cursor-pointer"
-        >
-          Sign out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                signOutWithGoogle();
+              }}
+              className="cursor-pointer"
+            >
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </>
   );
 };
 

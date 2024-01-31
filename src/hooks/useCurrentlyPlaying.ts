@@ -3,28 +3,6 @@ import { useSupabaseUser } from '@/lib/providers/user-state';
 import { Song } from '@/types/supabase';
 import { redirect } from 'next/navigation';
 
-// export const useCurrentlyPlaying = (songs: Song[]) => {
-//   const { user } = useSupabaseUser();
-
-//   const { dispatch } = usePlayer();
-
-//   const onPlay = (id: string) => {
-//     if (!user) redirect('/');
-
-//     dispatch({
-//       type: 'SET_ID',
-//       payload: id,
-//     });
-
-//     dispatch({
-//       type: 'SET_IDS',
-//       payload: songs.map((song) => song.id),
-//     });
-//   };
-
-//   return onPlay;
-// };
-
 export const useCurrentlyPlaying = (songs: Song[]) => {
   const { user } = useSupabaseUser();
 

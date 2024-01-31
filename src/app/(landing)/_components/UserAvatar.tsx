@@ -3,9 +3,12 @@ import Image from 'next/legacy/image';
 import { AvatarProps } from '@radix-ui/react-avatar';
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { User } from '@/types/supabase';
+import { Icons } from '@/components/Icons';
+import { AuthUser } from '@supabase/supabase-js';
 
 interface UserAvatarProps extends AvatarProps {
-  user: any;
+  user: Partial<AuthUser>;
   isMobile?: boolean;
 }
 
@@ -17,25 +20,27 @@ const UserAvatar: FC<UserAvatarProps> = ({ user, isMobile, ...props }) => {
         isMobile && 'gap-0'
       )}
     >
-      <Avatar {...props} className="rounded-xl">
-        {user?.image ? (
+      <div className="text-primary text-md font-medium">
+        {user.user_metadata?.name}
+      </div>
+      <Avatar {...props} className="rounded-full">
+        {user.user_metadata?.avatar_url ? (
           <div className="relative aspect-square">
             <Image
               layout="fill"
               priority
-              src={user?.image}
+              src={user.user_metadata?.avatar_url}
               alt="profile image"
               referrerPolicy="no-referrer"
             />
           </div>
         ) : (
           <AvatarFallback>
-            <span className="sr-only">{user?.name}</span>
-            {/* <Icons.user className="h-4 w-4" /> */}
+            <span className="sr-only">{user.user_metadata?.name}</span>
+            <Icons.user className="h-4 w-4" />
           </AvatarFallback>
         )}
       </Avatar>
-      <div className="text-primary text-md font-medium">{user?.name}</div>
     </div>
   );
 };

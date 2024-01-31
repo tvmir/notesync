@@ -11,7 +11,7 @@ const NotebookPage: FC<NotebookProps> = async ({}) => {
   const { data: songs } = await fetchSongs();
 
   return (
-    <div className="p-4">
+    <div className="relative h-full pt-20">
       <Metrics />
       <div>
         <PlaylistView songs={songs!} />
