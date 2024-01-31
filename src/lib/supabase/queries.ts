@@ -9,8 +9,8 @@ import {
   songs,
   users,
 } from '../../../migrations/schema';
-import { and, eq } from 'drizzle-orm';
-import { File, Folder, LikedSong, Notebook } from '@/types/supabase';
+import { and, eq, inArray } from 'drizzle-orm';
+import { File, Folder, LikedSong, Notebook, Song } from '@/types/supabase';
 
 export const createNotebook = async (notebook: Notebook) => {
   try {
@@ -97,7 +97,7 @@ export const createFile = async (file: File) => {
     await db.insert(files).values(file);
 
     return {
-      data: null,
+      data: '',
       error: null,
     };
   } catch (error) {
@@ -247,16 +247,58 @@ export const fetchSongsByGenre = async (genre: string) => {
   }
 };
 
+// export const fetchLikedSong = async (userId: string, songId: string) => {
+//   try {
+//     const res = (await db
+//       .select()
+//       .from(likedSongs)
+//       .where(and(eq(users.id, userId), eq(songs.id, songId)))
+//       .limit(1)) as LikedSong[] | [];
+
+//     return {
+//       data: res[0],
+//       error: null,
+//     };
+//   } catch (error) {
+//     console.log(error);
+
+//     return {
+//       data: null,
+//       error: 'Error: Unable to fetch liked song',
+//     };
+//   }
+// };
+
 export const fetchLikedSong = async (userId: string, songId: string) => {
   try {
     const res = (await db
-      .select()
-      .from(likedSongs)
-      .where(and(eq(users.id, userId), eq(songs.id, songId)))
-      .limit(1)) as LikedSong[] | [];
+      .select({
+        likes: songs.likes,
+      }) // Adjust the columns as needed
+      .from(songs)
+      // .where(and(eq(users.id, userId), eq(songs.id, songId)))
+      .limit(1)) as Song[] | [];
+
+    if (res.length === 0) {
+      return {
+        data: null,
+        error: 'Error: Song not found',
+      };
+    }
+
+    // Extract likes array from the result
+    const likesArray = res[0].likes;
+
+    // Your existing logic for fetching user-specific data goes here
+    // For example, checking if the user ID is in the likes array
 
     return {
-      data: res[0],
+      data: {
+        id: res[0].id,
+        track_name: res[0].trackName,
+        artist: res[0].artist,
+        likes: likesArray,
+      },
       error: null,
     };
   } catch (error) {
@@ -271,10 +313,13 @@ export const fetchLikedSong = async (userId: string, songId: string) => {
 
 export const likeSong = async (userId: string, songId: string) => {
   try {
-    await db.insert(likedSongs).values({
-      userId,
-      songId,
-    });
+    // db.update(files).set(file).where(eq(files.id, fileId));
+    await db
+      .update(songs)
+      .set({
+        likes: [userId],
+      })
+      .where(eq(songs.id, songId));
 
     return {
       data: null,
@@ -290,11 +335,35 @@ export const likeSong = async (userId: string, songId: string) => {
   }
 };
 
-export const removeLikedSong = async (userId: string, songId: string) => {
+// export const likeSong = async (userId: string, songId: string) => {
+//   try {
+//     await db.insert(likedSongs).values({
+//       userId,
+//       songId,
+//     });
+
+//     return {
+//       data: null,
+//       error: null,
+//     };
+//   } catch (error) {
+//     console.log('Like Song Error: ' + error);
+
+//     return {
+//       data: null,
+//       error: 'Error: Unable to like song',
+//     };
+//   }
+// };
+
+export const removeLikedSong = async (userId: string[], songId: string) => {
   try {
     await db
-      .delete(likedSongs)
-      .where(and(eq(users.id, userId), eq(songs.id, songId)));
+      .delete(songs)
+      .where(and(inArray(songs.likes, [userId]), eq(songs.id, songId)));
+    // await db
+    //   .delete(likedSongs)
+    //   .where(and(eq(users.id, userId), eq(songs.id, songId)));
 
     return {
       data: null,

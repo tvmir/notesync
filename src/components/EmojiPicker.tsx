@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
@@ -12,7 +11,6 @@ interface EmojiPickerProps {
 
 const EmojiPicker: FC<EmojiPickerProps> = ({ children, getEmoji }) => {
   const Picker = dynamic(() => import('emoji-picker-react'));
-  const router = useRouter();
 
   const onClick = (selectedEmoji: any) => {
     if (getEmoji) getEmoji(selectedEmoji.emoji);

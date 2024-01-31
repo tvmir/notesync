@@ -7,6 +7,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { SupabaseUserProvider } from '@/lib/providers/user-state';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { PlayerProvider } from '@/lib/providers/use-player-state';
+import ModalProvider from '@/lib/providers/use-modal-state';
+import { MobileProvider } from '@/lib/providers/use-mobile-state';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,7 +32,11 @@ export default function RootLayout({
         >
           <AppStateProvider>
             <SupabaseUserProvider>
-              <PlayerProvider>{children}</PlayerProvider>
+              <MobileProvider>
+                <ModalProvider>
+                  <PlayerProvider>{children}</PlayerProvider>
+                </ModalProvider>
+              </MobileProvider>
             </SupabaseUserProvider>
             <Toaster />
           </AppStateProvider>

@@ -12,7 +12,7 @@ import { useAppState } from '@/lib/providers/state';
 import { createFile, updateFile, updateFolder } from '@/lib/supabase/queries';
 import { File } from '@/types/supabase';
 import clsx from 'clsx';
-import { PlusIcon, Trash } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FC, useMemo, useState } from 'react';
 import { v4 } from 'uuid';
@@ -144,7 +144,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     if (fId.length === 2 && fId[1]) {
       if (!fileTitle) return;
 
-      const { data, error } = await updateFile({ title: fileTitle }, fId[1]);
+      const { error } = await updateFile({ title: fileTitle }, fId[1]);
 
       if (error) {
         toast({
@@ -199,7 +199,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
 
     const newFile: File = {
       folderId: id,
-      content: null,
+      content: '',
       createdAt: new Date().toISOString(),
       inTrash: null,
       title: 'Untitled',
@@ -237,7 +237,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
           'group-hover/folder:block': type === 'folder',
         }
       ),
-    [isFolder]
+    [type]
   );
 
   return (

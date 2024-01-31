@@ -1,13 +1,22 @@
 'use client';
 
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ElementRef,
+  FC,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useAppState } from '@/lib/providers/state';
 import { File } from '@/types/supabase';
-import { useRouter } from 'next/navigation';
 import { updateFile } from '@/lib/supabase/queries';
 import type EditorJS from '@editorjs/editorjs';
 import { useToast } from '@/components/ui/use-toast';
 import { OutputData } from '@editorjs/editorjs';
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface EditorProps {
   fileId: string;
@@ -15,14 +24,13 @@ interface EditorProps {
 }
 
 const Editor: FC<EditorProps> = ({ fileId, file }) => {
-  const router = useRouter();
+  const ref = useRef<EditorJS>();
+  const titleRef = useRef<ElementRef<'textarea'>>(null);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { toast } = useToast();
 
   const { state, dispatch, notebookId, folderId } = useAppState();
-
-  const ref = useRef<EditorJS>();
-  const _titleRef = useRef<HTMLTextAreaElement>(null);
-  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   const editorContent = useMemo(() => {
     const fileContent = state.notebooks
@@ -42,6 +50,51 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
       inTrash: file?.inTrash,
     } as File;
   }, [state, notebookId, folderId]);
+
+  const [inputVal, setInputVal] = useState<string>(editorContent.title);
+
+  const enableInputTitle = () => {
+    setIsEditing(true);
+    setTimeout(() => {
+      setInputVal(editorContent.title);
+      titleRef.current?.focus();
+    }, 0);
+  };
+
+  const disableInputTitle = () => setIsEditing(false);
+
+  const onChangeInputTitle = async (value: string) => {
+    if (!notebookId || !folderId) return;
+
+    setInputVal(value);
+    dispatch({
+      type: 'UPDATE_FILE',
+      payload: {
+        file: { title: value || 'Untitled' },
+        folderId,
+        notebookId,
+        fileId,
+      },
+    });
+
+    const { error } = await updateFile({ title: value }, fileId);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description:
+          'Unable to update the title for this file, please try again',
+      });
+    }
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      disableInputTitle();
+    }
+  };
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
@@ -75,7 +128,7 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
             },
           });
 
-          const { data, error } = await updateFile({ content: blocks }, fileId);
+          const { error } = await updateFile({ content: blocks }, fileId);
 
           if (error) {
             toast({
@@ -86,7 +139,9 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         },
         placeholder: 'Type here to write your note...',
         inlineToolbar: true,
-        data: { blocks: (editorContent.content as OutputData).blocks },
+        data: {
+          blocks: (editorContent.content as OutputData).blocks,
+        },
         tools: {
           header: Header,
           linkTool: {
@@ -129,10 +184,6 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
   useEffect(() => {
     const init = async () => {
       await initializeEditor();
-
-      setTimeout(() => {
-        _titleRef?.current?.focus();
-      }, 0);
     };
 
     if (isMounted) {
@@ -147,6 +198,25 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
 
   return (
     <>
+      <div className="group relative">
+        {isEditing ? (
+          <TextareaAutosize
+            ref={titleRef}
+            onBlur={disableInputTitle}
+            onKeyDown={onKeyDown}
+            value={inputVal}
+            onChange={(e) => onChangeInputTitle(e.target.value)}
+            className="text-5xl bg-transparent font-bold break-words outline-none text-primary"
+          />
+        ) : (
+          <div
+            onClick={enableInputTitle}
+            className="pb-3 text-5xl font-bold break-words outline-none text-primary"
+          >
+            {editorContent.title}
+          </div>
+        )}
+      </div>
       <div id="editor" className="prose max-w-[800px]" />
     </>
   );
