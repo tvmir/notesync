@@ -4,6 +4,7 @@ import {
   jsonb,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
   uuid,
@@ -35,6 +36,7 @@ export const notebooks = pgTable('notebooks', {
   notebookUser: uuid('notebook_user').notNull(),
   title: text('title').notNull(),
   inTrash: text('in_trash'),
+  pomodoroCount: smallint('pomodoro_count'),
 });
 
 // Folders Table
@@ -56,6 +58,7 @@ export const folders = pgTable('folders', {
     }),
 });
 
+// Files Table
 export const files = pgTable('files', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', {
@@ -80,6 +83,7 @@ export const files = pgTable('files', {
     }),
 });
 
+// Songs Table
 export const songs = pgTable('songs', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
@@ -89,10 +93,6 @@ export const songs = pgTable('songs', {
   artist: text('artist'),
   songFile: text('song_file'),
   imageFile: text('image_file'),
-  userId: uuid('user_id').references(() => users.id, {
-    onDelete: 'cascade',
-    onUpdate: 'cascade',
-  }),
   genre: text('genre'),
   likes: uuid('likes').array(),
 });

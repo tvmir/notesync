@@ -29,6 +29,7 @@ const NewNotebook: FC = () => {
         title,
         notebookUser: user.id,
         inTrash: '',
+        pomodoroCount: 0,
       };
 
       toast({

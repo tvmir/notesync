@@ -4,12 +4,12 @@ import { Song } from '@/types/supabase';
 import { redirect } from 'next/navigation';
 
 export const useCurrentlyPlaying = (songs: Song[]) => {
-  const { user } = useSupabaseUser();
+  // const { user } = useSupabaseUser();
 
   const { dispatch } = usePlayer();
 
   const onPlay = (id: string) => {
-    if (!user) redirect('/');
+    // if (!user) redirect('/');
 
     const currentSong = songs.find((song) => song.id === id);
 

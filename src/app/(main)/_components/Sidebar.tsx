@@ -14,6 +14,7 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = async ({ params, className }) => {
   const supabase = supabaseServer();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -31,7 +32,6 @@ const Sidebar: FC<SidebarProps> = async ({ params, className }) => {
   return (
     <>
       <SidebarItems
-        // defaultOpen={true}
         userNotebooks={allUserNotebooks}
         defaultNotebook={allUserNotebooks.find(
           (notebook) => notebook.id === params.notebookId

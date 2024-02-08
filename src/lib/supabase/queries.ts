@@ -40,9 +40,34 @@ export const fetchNotebooks = async (userId: string) => {
       notebookUser: notebooks.notebookUser,
       title: notebooks.title,
       inTrash: notebooks.inTrash,
+      pomodoroCount: notebooks.pomodoroCount,
     })
     .from(notebooks)
     .where(eq(notebooks.notebookUser, userId))) as Notebook[];
+};
+
+export const updateNotebook = async (
+  notebook: Partial<Notebook>,
+  notebookId: string
+) => {
+  try {
+    await db
+      .update(notebooks)
+      .set(notebook)
+      .where(eq(notebooks.id, notebookId));
+
+    return {
+      data: null,
+      error: null,
+    };
+  } catch (error) {
+    console.log('Update Notebook Error: ' + error);
+
+    return {
+      data: null,
+      error: 'Error: Unable to update notebook',
+    };
+  }
 };
 
 export const fetchFolders = async (notebookId: string) => {
@@ -274,9 +299,9 @@ export const fetchLikedSong = async (userId: string, songId: string) => {
     const res = (await db
       .select({
         likes: songs.likes,
-      }) // Adjust the columns as needed
+      })
       .from(songs)
-      // .where(and(eq(users.id, userId), eq(songs.id, songId)))
+      .where(and(eq(users.id, userId), eq(songs.id, songId)))
       .limit(1)) as Song[] | [];
 
     if (res.length === 0) {
@@ -286,11 +311,7 @@ export const fetchLikedSong = async (userId: string, songId: string) => {
       };
     }
 
-    // Extract likes array from the result
     const likesArray = res[0].likes;
-
-    // Your existing logic for fetching user-specific data goes here
-    // For example, checking if the user ID is in the likes array
 
     return {
       data: {
