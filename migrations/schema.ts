@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, timestamp, text, jsonb, boolean, foreignKey, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, uuid, timestamp, text, smallint, jsonb, boolean, foreignKey, primaryKey } from "drizzle-orm/pg-core"
   import { sql } from "drizzle-orm"
 
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
@@ -24,6 +24,7 @@ export const notebooks = pgTable("notebooks", {
 	notebookUser: uuid("notebook_user").notNull(),
 	title: text("title").notNull(),
 	inTrash: text("in_trash"),
+	pomodoroCount: smallint("pomodoro_count"),
 });
 
 export const files = pgTable("files", {
@@ -54,7 +55,6 @@ export const songs = pgTable("songs", {
 	artist: text("artist"),
 	songFile: text("song_file"),
 	imageFile: text("image_file"),
-	userId: uuid("user_id").references(() => users.id),
 	genre: text("genre"),
 	likes: uuid("likes").array(),
 });

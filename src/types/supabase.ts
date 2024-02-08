@@ -118,6 +118,7 @@ export interface Database {
           id: string;
           in_trash: string | null;
           notebook_user: string;
+          pomodoro_count: number;
           title: string;
         };
         Insert: {
@@ -125,6 +126,7 @@ export interface Database {
           id?: string;
           in_trash?: string | null;
           notebook_user: string;
+          pomodoro_count?: number;
           title: string;
         };
         Update: {
@@ -132,6 +134,7 @@ export interface Database {
           id?: string;
           in_trash?: string | null;
           notebook_user?: string;
+          pomodoro_count?: number;
           title?: string;
         };
         Relationships: [];
@@ -146,7 +149,6 @@ export interface Database {
           likes: string[] | null;
           song_file: string | null;
           track_name: string | null;
-          user_id: string | null;
         };
         Insert: {
           artist?: string | null;
@@ -157,7 +159,6 @@ export interface Database {
           likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
-          user_id?: string | null;
         };
         Update: {
           artist?: string | null;
@@ -168,17 +169,8 @@ export interface Database {
           likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
-          user_id?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'songs_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          }
-        ];
+        Relationships: [];
       };
       users: {
         Row: {

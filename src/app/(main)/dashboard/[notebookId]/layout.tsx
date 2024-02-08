@@ -2,7 +2,7 @@ import { FC } from 'react';
 import Sidebar from '../../_components/Sidebar';
 import UserAccount from '@/app/(landing)/_components/UserAccount';
 import supabaseServer from '@/lib/supabase/supabaseServer';
-// import PomodoroTimer from '@/components/Pomodoro';
+import PomodoroTimer from '@/components/Pomodoro';
 
 interface NotebookProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ const NotebookLayout: FC<NotebookProps> = async ({ children, params }) => {
 
       <div className="md:pl-[232px]">
         <div className="fixed z-[20] md:left-[232px] left-0 right-2 top-0 p-3 backdrop-blur-md flex gap-3 items-center border-b-[1px]">
-          {/* <PomodoroTimer /> */}
+          <PomodoroTimer notebookId={params.notebookId} />
           <UserAccount user={user} />
         </div>
         <div className="relative w-full">{children}</div>
