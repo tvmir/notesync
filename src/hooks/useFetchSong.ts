@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Song } from '@/types/supabase';
-import { fetchSongByGenreID, fetchSongByID } from '@/lib/supabase/queries';
+import { fetchSongByID } from '@/lib/supabase/queries';
 import { useToast } from '@/components/ui/use-toast';
 
 export const useFetchSongByID = (id: string) => {

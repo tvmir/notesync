@@ -40,7 +40,7 @@ const PlaylistSongItem: FC<PlaylistSongItemProps> = ({ data, onClick }) => {
           className="object-cover"
         />
       </div>
-      <div className="flex flex-col gap-y-3 overflow-hidden items-center">
+      <div className="flex flex-col gap-y-2 overflow-hidden items-center">
         <p className="text-white text-sm truncate">{data.trackName}</p>
         <p className="text-muted-foreground text-xs truncate">{data.artist}</p>
       </div>

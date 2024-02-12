@@ -3,81 +3,52 @@
 import { useToast } from '@/components/ui/use-toast';
 import { usePlayer } from '@/lib/providers/use-player-state';
 import { useSupabaseUser } from '@/lib/providers/user-state';
-import {
-  fetchLikedSong,
-  likeSong,
-  removeLikedSong,
-} from '@/lib/supabase/queries';
+import { likeSong } from '@/lib/supabase/queries';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Heart } from 'lucide-react';
 import { redirect, useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 
 interface IsLikedButtonProps {
   songId: string;
 }
 
 const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
-  // const [isLiked, setIsLiked] = useState<boolean>(false);
   const { state, dispatch } = usePlayer();
   const isLiked = state.likedSongs?.includes(songId);
   const router = useRouter();
   const { user } = useSupabaseUser();
   const { toast } = useToast();
+  const supabase = createClientComponentClient();
 
-  // useEffect(() => {
-  //   if (!user?.id) return;
+  useEffect(() => {
+    if (!user?.id) return;
 
-  //   const fetchUserSongData = async () => {
-  //     const { data, error } = await fetchLikedSong(user.id, songId);
+    const fetchUserSongData = async () => {
+      const { data, error } = await supabase
+        .from('liked_songs')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('song_id', songId)
+        .maybeSingle();
 
-  //     console.log('LIKED SONGS: ' + data);
+      if (!error && data) {
+        dispatch({ type: 'LIKE_SONG', payload: songId });
+      }
+    };
 
-  //     // if (!error && data) setIsLiked(true);
-  //     if (!error && data) {
-  //       dispatch({ type: 'LIKE_SONG', payload: songId });
-  //     }
-  //   };
-
-  //   fetchUserSongData();
-  // }, [user?.id, songId]);
-
-  // const handleLikeTrigger = async () => {
-  //   if (!user) redirect('/');
-
-  //   if (isLiked) {
-  //     const { error } = await removeLikedSong(user.id, songId);
-
-  //     if (error) {
-  //       toast({
-  //         variant: 'destructive',
-  //         description:
-  //           'Something went wrong when trying to remove the like from this song, please try again.',
-  //       });
-  //     } else {
-  //       setIsLiked(false);
-  //     }
-  //   } else {
-  //     const { error } = await likeSong(user.id, songId);
-
-  //     if (error) {
-  //       toast({
-  //         variant: 'destructive',
-  //         description:
-  //           'Something went wrong when trying to like this song, please try again.',
-  //       });
-  //     } else {
-  //       setIsLiked(true);
-  //     }
-  //   }
-
-  //   router.refresh();
-  // };
+    fetchUserSongData();
+  }, [user?.id, songId, supabase]);
 
   const handleLikeTrigger = async () => {
     if (!user) redirect('/');
 
     if (isLiked) {
-      const { error } = await removeLikedSong([...user.id], songId);
+      const { error } = await supabase
+        .from('liked_songs')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('song_id', songId);
 
       if (error) {
         toast({
