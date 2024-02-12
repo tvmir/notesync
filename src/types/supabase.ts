@@ -4,6 +4,7 @@ import {
   folders,
   likedSongs,
   notebooks,
+  recommendedSongs,
   songs,
   users,
 } from '../../migrations/schema';
@@ -84,6 +85,42 @@ export interface Database {
           created_at: string;
           song_id: string;
           user_id: string;
+          like_count: number;
+        };
+        Insert: {
+          created_at?: string;
+          song_id: string;
+          user_id: string;
+          like_count: number;
+        };
+        Update: {
+          created_at?: string;
+          song_id?: string;
+          user_id?: string;
+          like_count: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'liked_songs_song_id_fkey';
+            columns: ['song_id'];
+            isOneToOne: false;
+            referencedRelation: 'songs';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'liked_songs_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      recommended_songs: {
+        Row: {
+          created_at: string;
+          song_id: string;
+          user_id: string;
         };
         Insert: {
           created_at?: string;
@@ -97,14 +134,14 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: 'liked_songs_song_id_fkey';
+            foreignKeyName: 'recommended_songs_song_id_fkey';
             columns: ['song_id'];
             isOneToOne: false;
             referencedRelation: 'songs';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'liked_songs_user_id_fkey';
+            foreignKeyName: 'recommended_songs_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
@@ -146,7 +183,6 @@ export interface Database {
           genre: string | null;
           id: string;
           image_file: string | null;
-          likes: string[] | null;
           song_file: string | null;
           track_name: string | null;
         };
@@ -156,7 +192,6 @@ export interface Database {
           genre?: string | null;
           id?: string;
           image_file?: string | null;
-          likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
         };
@@ -166,7 +201,6 @@ export interface Database {
           genre?: string | null;
           id?: string;
           image_file?: string | null;
-          likes?: string[] | null;
           song_file?: string | null;
           track_name?: string | null;
         };
@@ -304,3 +338,4 @@ export type Folder = InferSelectModel<typeof folders>;
 export type File = InferSelectModel<typeof files>;
 export type Song = InferSelectModel<typeof songs>;
 export type LikedSong = InferSelectModel<typeof likedSongs>;
+export type RecommendedSong = InferSelectModel<typeof recommendedSongs>;

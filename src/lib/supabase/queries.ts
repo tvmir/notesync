@@ -6,10 +6,11 @@ import {
   folders,
   likedSongs,
   notebooks,
+  recommendedSongs,
   songs,
   users,
 } from '../../../migrations/schema';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { File, Folder, LikedSong, Notebook, Song } from '@/types/supabase';
 
 export const createNotebook = async (notebook: Notebook) => {
@@ -238,109 +239,13 @@ export const fetchSongByID = async (songId: string) => {
   }
 };
 
-export const fetchSongByGenreID = async (songId: string, genre: string) => {
-  try {
-    const res = await db
-      .select()
-      .from(songs)
-      .where(and(eq(songs.id, songId), eq(songs.genre, genre)))
-      .limit(1);
-
-    return { data: res[0], error: null };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      data: null,
-      error: 'Error: Unable to fetch songs',
-    };
-  }
-};
-
-export const fetchSongsByGenre = async (genre: string) => {
-  try {
-    const res = await db.select().from(songs).where(eq(songs.genre, genre));
-
-    return { data: res, error: null };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      data: null,
-      error: 'Error: Unable to fetch songs by genre',
-    };
-  }
-};
-
-// export const fetchLikedSong = async (userId: string, songId: string) => {
-//   try {
-//     const res = (await db
-//       .select()
-//       .from(likedSongs)
-//       .where(and(eq(users.id, userId), eq(songs.id, songId)))
-//       .limit(1)) as LikedSong[] | [];
-
-//     return {
-//       data: res[0],
-//       error: null,
-//     };
-//   } catch (error) {
-//     console.log(error);
-
-//     return {
-//       data: null,
-//       error: 'Error: Unable to fetch liked song',
-//     };
-//   }
-// };
-
-export const fetchLikedSong = async (userId: string, songId: string) => {
-  try {
-    const res = (await db
-      .select({
-        likes: songs.likes,
-      })
-      .from(songs)
-      .where(and(eq(users.id, userId), eq(songs.id, songId)))
-      .limit(1)) as Song[] | [];
-
-    if (res.length === 0) {
-      return {
-        data: null,
-        error: 'Error: Song not found',
-      };
-    }
-
-    const likesArray = res[0].likes;
-
-    return {
-      data: {
-        id: res[0].id,
-        track_name: res[0].trackName,
-        artist: res[0].artist,
-        likes: likesArray,
-      },
-      error: null,
-    };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      data: null,
-      error: 'Error: Unable to fetch liked song',
-    };
-  }
-};
-
 export const likeSong = async (userId: string, songId: string) => {
   try {
-    // db.update(files).set(file).where(eq(files.id, fileId));
-    await db
-      .update(songs)
-      .set({
-        likes: [userId],
-      })
-      .where(eq(songs.id, songId));
+    await db.insert(likedSongs).values({
+      userId,
+      songId,
+      likeCount: 1,
+    });
 
     return {
       data: null,
@@ -352,50 +257,6 @@ export const likeSong = async (userId: string, songId: string) => {
     return {
       data: null,
       error: 'Error: Unable to like song',
-    };
-  }
-};
-
-// export const likeSong = async (userId: string, songId: string) => {
-//   try {
-//     await db.insert(likedSongs).values({
-//       userId,
-//       songId,
-//     });
-
-//     return {
-//       data: null,
-//       error: null,
-//     };
-//   } catch (error) {
-//     console.log('Like Song Error: ' + error);
-
-//     return {
-//       data: null,
-//       error: 'Error: Unable to like song',
-//     };
-//   }
-// };
-
-export const removeLikedSong = async (userId: string[], songId: string) => {
-  try {
-    await db
-      .delete(songs)
-      .where(and(inArray(songs.likes, [userId]), eq(songs.id, songId)));
-    // await db
-    //   .delete(likedSongs)
-    //   .where(and(eq(users.id, userId), eq(songs.id, songId)));
-
-    return {
-      data: null,
-      error: null,
-    };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      data: null,
-      error: 'Error: Unable to remove liked song',
     };
   }
 };

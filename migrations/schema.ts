@@ -24,7 +24,7 @@ export const notebooks = pgTable("notebooks", {
 	notebookUser: uuid("notebook_user").notNull(),
 	title: text("title").notNull(),
 	inTrash: text("in_trash"),
-	pomodoroCount: smallint("pomodoro_count"),
+	pomodoroCount: smallint("pomodoro_count").default(0),
 });
 
 export const files = pgTable("files", {
@@ -56,13 +56,24 @@ export const songs = pgTable("songs", {
 	songFile: text("song_file"),
 	imageFile: text("image_file"),
 	genre: text("genre"),
-	likes: uuid("likes").array(),
+});
+
+export const recommendedSongs = pgTable("recommended_songs", {
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" } ),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	songId: uuid("song_id").notNull().references(() => songs.id, { onDelete: "cascade", onUpdate: "cascade" } ),
+},
+(table) => {
+	return {
+		recommendedSongsPkey: primaryKey({ columns: [table.userId, table.songId], name: "recommended_songs_pkey"})
+	}
 });
 
 export const likedSongs = pgTable("liked_songs", {
 	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 	songId: uuid("song_id").notNull().references(() => songs.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	likeCount: smallint("like_count"),
 },
 (table) => {
 	return {

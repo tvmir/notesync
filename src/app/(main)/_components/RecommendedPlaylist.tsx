@@ -1,37 +1,34 @@
 'use client';
 
-import { Song } from '@/types/supabase';
 import Image from 'next/image';
 import { FC } from 'react';
 import PlayButton from './PlayButton';
+import { Song } from '@/types/supabase';
 
-interface PlaylistDataProps {
+interface RecommendedPlaylistProps {
   data: Song;
   onClick: (id: string) => void;
 }
 
-const PlaylistData: FC<PlaylistDataProps> = ({ data, onClick }) => {
+const RecommendedPlaylist: FC<RecommendedPlaylistProps> = ({
+  data,
+  onClick,
+}) => {
   return (
     <div
-      className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-2 border-none cursor-pointer transition p-2"
+      className="flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-2 border-none cursor-pointer transition p-2"
       onClick={() => onClick(data.id)}
     >
       <div className="relative h-[240px] w-[200px] rounded-md overflow-hidden">
         <Image
-          src={
-            data.genre === 'lo-fi'
-              ? '/lofi-cover.webp'
-              : '/vinyl-art-cover.jpeg'
-          }
+          src={'/foryou-cover.jpeg'}
           fill
-          alt="Cover Image"
+          alt="For You Cover Image"
           className="object-cover transition-all hover:scale-105"
         />
       </div>
       <div className="flex flex-col items-start w-full pt-2 gap-y-1">
-        <p className="truncate w-full">
-          {data.genre === 'lo-fi' ? 'Chill Lo-Fi' : 'Classical'}
-        </p>
+        <p className="truncate w-full">For You</p>
       </div>
       <div className="absolute bottom-16 right-5">
         <PlayButton />
@@ -40,4 +37,4 @@ const PlaylistData: FC<PlaylistDataProps> = ({ data, onClick }) => {
   );
 };
 
-export default PlaylistData;
+export default RecommendedPlaylist;
