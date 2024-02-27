@@ -5,7 +5,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
-  return <main className="flex overflow-hidden h-screen">{children}</main>;
+  return <main className="flex h-screen">{children}</main>;
 };
 
 export default DashboardLayout;

@@ -6,6 +6,8 @@ export const useLoadImage = (song: Song) => {
 
   if (!song) return null;
 
+  if (!song.imageFile) return;
+
   const { data: coverImage } = supabase.storage
     .from('song_covers')
     .getPublicUrl(song.imageFile!);

@@ -34,14 +34,13 @@ const PlaylistSongItem: FC<PlaylistSongItemProps> = ({ data, onClick }) => {
       <div className="relative rounded-md min-h-[180px] min-w-[180px] overflow-hidden">
         <Image
           fill
-          // TODO: Add Image Cover
-          src={imageUrl || ''}
+          src={imageUrl || '/no-song-img.jpeg'}
           alt="Song Cover"
           className="object-cover"
         />
       </div>
       <div className="flex flex-col gap-y-2 overflow-hidden items-center">
-        <p className="text-white text-sm truncate">{data.trackName}</p>
+        <p className="text-white text-sm truncate max-w-40">{data.trackName}</p>
         <p className="text-muted-foreground text-xs truncate">{data.artist}</p>
       </div>
     </div>

@@ -18,7 +18,7 @@ const NotebookLayout: FC<NotebookProps> = async ({ children, params }) => {
   if (!user) return;
 
   return (
-    <main className="flex overflow-hidden h-screen">
+    <main className="flex h-screen">
       <Sidebar params={params} />
 
       <div className="md:pl-[232px]">
@@ -26,7 +26,7 @@ const NotebookLayout: FC<NotebookProps> = async ({ children, params }) => {
           <PomodoroTimer notebookId={params.notebookId} />
           <UserAccount user={user} />
         </div>
-        <div className="relative w-full">{children}</div>
+        <div className="w-full">{children}</div>
       </div>
     </main>
   );

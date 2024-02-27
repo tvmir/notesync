@@ -49,29 +49,30 @@ const CreateNotebookSetup: FC<CreateNotebookSetupProps> = ({ user }) => {
         createdAt: new Date().toISOString(),
         id: notebookUUID,
         title: value.notebookName,
-        notebookUser: user.id,
-        inTrash: '',
+        userId: user.id,
         pomodoroCount: 0,
       };
 
-      const { data, error } = await createNotebook(newNotebook);
-      console.log('Notebook: ' + data);
+      const { error } = await createNotebook(newNotebook);
+
       if (error) {
-        console.log('Unable to create notebook: ' + error);
+        console.log('Unable to create notebook: ', error);
+      } else {
+        dispatch({
+          type: 'ADD_NOTEBOOK',
+          payload: { ...newNotebook, folders: [] },
+        });
+
+        toast({
+          title: 'Notebook Created',
+          description: `${newNotebook.title} has been created successfully.`,
+        });
+
+        router.replace(`/dashboard/${newNotebook.id}`);
       }
-      dispatch({
-        type: 'ADD_NOTEBOOK',
-        payload: { ...newNotebook, folders: [] },
-      });
-
-      toast({
-        title: 'Notebook Created',
-        description: `${newNotebook.title} has been created successfully.`,
-      });
-
-      router.replace(`/dashboard/${newNotebook.id}`);
     } catch (error) {
       console.log(error, 'Error');
+
       toast({
         title: 'Could not create your notebook',
         description:

@@ -16,12 +16,14 @@ const PlaylistData: FC<PlaylistDataProps> = ({ data, onClick }) => {
       className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-2 border-none cursor-pointer transition p-2"
       onClick={() => onClick(data.id)}
     >
-      <div className="relative h-[240px] w-[200px] rounded-md overflow-hidden">
+      <div className="relative h-[160px] w-[130px] md:h-[240px] md:w-[200px] rounded-md overflow-hidden">
         <Image
           src={
             data.genre === 'lo-fi'
               ? '/lofi-cover.webp'
-              : '/vinyl-art-cover.jpeg'
+              : data.genre === 'classical'
+              ? '/vinyl-art-cover.jpeg'
+              : '/binaural-cover.jpeg'
           }
           fill
           alt="Cover Image"
@@ -30,7 +32,11 @@ const PlaylistData: FC<PlaylistDataProps> = ({ data, onClick }) => {
       </div>
       <div className="flex flex-col items-start w-full pt-2 gap-y-1">
         <p className="truncate w-full">
-          {data.genre === 'lo-fi' ? 'Chill Lo-Fi' : 'Classical'}
+          {data.genre === 'lo-fi'
+            ? 'Chill Lo-Fi'
+            : data.genre === 'classical'
+            ? 'Classical Era'
+            : 'Binaural Tunes'}
         </p>
       </div>
       <div className="absolute bottom-16 right-5">

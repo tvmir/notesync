@@ -23,8 +23,8 @@ const Metrics: FC<MetricsProps> = async ({ notebookId }) => {
 
   return (
     <div className="space-y-2 p-4 pt-0 max-w-5xl">
-      <div className="grid gap-1 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="w-64">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Pomodoro Sessions
@@ -34,12 +34,12 @@ const Metrics: FC<MetricsProps> = async ({ notebookId }) => {
             <div className="text-2xl font-bold">
               +{currentNotebook?.pomodoroCount}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-2">
               +{(currentNotebook?.pomodoroCount! / 100) * 100}% from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="w-64">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Tasks Completed
@@ -66,7 +66,7 @@ const Metrics: FC<MetricsProps> = async ({ notebookId }) => {
             </p>
           </CardContent>
         </Card>
-        <Card className="w-64">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Average Hours Spent

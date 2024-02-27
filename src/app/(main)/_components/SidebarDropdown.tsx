@@ -201,7 +201,6 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
       folderId: id,
       content: '',
       createdAt: new Date().toISOString(),
-      inTrash: null,
       title: 'Untitled',
       iconId: '📄',
       id: v4(),
@@ -298,8 +297,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
         {state.notebooks
           .find((notebook) => notebook.id === notebookId)
           ?.folders.find((folder) => folder.id === id)
-          ?.files.filter((file) => !file.inTrash)
-          .map((file) => {
+          ?.files.map((file) => {
             const customFileId = `${id}folder${file.id}`;
             return (
               <SidebarDropdown

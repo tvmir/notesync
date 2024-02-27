@@ -38,13 +38,12 @@ export const fetchNotebooks = async (userId: string) => {
     .select({
       id: notebooks.id,
       createdAt: notebooks.createdAt,
-      notebookUser: notebooks.notebookUser,
+      userId: notebooks.userId,
       title: notebooks.title,
-      inTrash: notebooks.inTrash,
       pomodoroCount: notebooks.pomodoroCount,
     })
     .from(notebooks)
-    .where(eq(notebooks.notebookUser, userId))) as Notebook[];
+    .where(eq(notebooks.userId, userId))) as Notebook[];
 };
 
 export const updateNotebook = async (

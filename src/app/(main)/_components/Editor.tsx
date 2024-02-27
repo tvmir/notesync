@@ -15,8 +15,9 @@ import { File } from '@/types/supabase';
 import { updateFile } from '@/lib/supabase/queries';
 import type EditorJS from '@editorjs/editorjs';
 import { useToast } from '@/components/ui/use-toast';
-import { OutputData } from '@editorjs/editorjs';
+import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import TextareaAutosize from 'react-textarea-autosize';
+import crypto from 'crypto';
 
 interface EditorProps {
   fileId: string;
@@ -28,9 +29,19 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
   const titleRef = useRef<ElementRef<'textarea'>>(null);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [encryptionKey, setEncryptionKey] = useState<Buffer | null>(null);
+  const [encryptionIV, setEncryptionIV] = useState<Buffer | null>(null);
   const { toast } = useToast();
 
   const { state, dispatch, notebookId, folderId } = useAppState();
+
+  useEffect(() => {
+    // Generate encryption key and IV
+    const key = crypto.randomBytes(32); // 256-bit key
+    const iv = crypto.randomBytes(16); // 128-bit IV
+    setEncryptionKey(key);
+    setEncryptionIV(iv);
+  }, []);
 
   const editorContent = useMemo(() => {
     const fileContent = state.notebooks
@@ -47,7 +58,6 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
       createdAt: file?.createdAt,
       iconId: file?.iconId,
       content: file?.content,
-      inTrash: file?.inTrash,
     } as File;
   }, [state, notebookId, folderId]);
 
@@ -96,6 +106,26 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
     }
   };
 
+  // Encryption function
+  function encrypt(data: any, key: Buffer, iv: Buffer): string {
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+    let encryptedData = cipher.update(data, 'utf-8', 'hex');
+    encryptedData += cipher.final('hex');
+    return encryptedData;
+  }
+
+  // Decryption function
+  function decrypt(
+    encryptedData: string,
+    key: Buffer,
+    iv: Buffer
+  ): OutputBlockData[] {
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    let decryptedData = decipher.update(encryptedData, 'hex', 'utf-8');
+    decryptedData += decipher.final('utf-8');
+    return JSON.parse(decryptedData) as OutputBlockData[];
+  }
+
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
     const Header = (await import('@editorjs/header')).default;
@@ -116,7 +146,19 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         onChange: async () => {
           const blocks = await ref.current?.save();
 
+          // if (!notebookId || !folderId || !encryptionKey || !encryptionIV)
+          //   return;
+
           if (!notebookId || !folderId) return;
+
+          // // Encrypt JSON data before updating in the database
+          // const jsonData = JSON.stringify(blocks);
+
+          // console.log('JSON: ', jsonData);
+
+          // const encryptedData = encrypt(jsonData, encryptionKey, encryptionIV);
+
+          // console.log('ENCRYPTED: ', encryptedData);
 
           dispatch({
             type: 'UPDATE_FILE',
@@ -142,6 +184,15 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         data: {
           blocks: (editorContent.content as OutputData).blocks,
         },
+        // data: {
+        //   blocks: editorContent.content
+        //     ? decrypt(
+        //         (editorContent.content as any).blocks,
+        //         encryptionKey!,
+        //         encryptionIV!
+        //       )
+        //     : [],
+        // },
         tools: {
           header: Header,
           linkTool: {

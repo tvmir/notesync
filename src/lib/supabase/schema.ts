@@ -33,9 +33,10 @@ export const notebooks = pgTable('notebooks', {
   })
     .defaultNow()
     .notNull(),
-  notebookUser: uuid('notebook_user').notNull(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   title: text('title').notNull(),
-  inTrash: text('in_trash'),
   pomodoroCount: smallint('pomodoro_count').default(0),
 });
 
@@ -50,7 +51,6 @@ export const folders = pgTable('folders', {
     .notNull(),
   title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
-  inTrash: text('in_trash'),
   notebookId: uuid('notebook_id')
     .notNull()
     .references(() => notebooks.id, {
@@ -70,7 +70,6 @@ export const files = pgTable('files', {
   title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
   content: jsonb('content'),
-  inTrash: text('in_trash'),
   notebookId: uuid('notebook_id')
     .notNull()
     .references(() => notebooks.id, {
