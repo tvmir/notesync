@@ -27,7 +27,6 @@ export interface Database {
           folder_id: string;
           icon_id: string;
           id: string;
-          in_trash: string | null;
           notebook_id: string;
           title: string;
         };
@@ -37,7 +36,6 @@ export interface Database {
           folder_id: string;
           icon_id: string;
           id?: string;
-          in_trash?: string | null;
           notebook_id: string;
           title: string;
         };
@@ -47,7 +45,6 @@ export interface Database {
           folder_id?: string;
           icon_id?: string;
           id?: string;
-          in_trash?: string | null;
           notebook_id?: string;
           title?: string;
         };
@@ -58,7 +55,6 @@ export interface Database {
           created_at: string;
           icon_id: string;
           id: string;
-          in_trash: string | null;
           notebook_id: string;
           title: string;
         };
@@ -66,7 +62,6 @@ export interface Database {
           created_at?: string;
           icon_id: string;
           id?: string;
-          in_trash?: string | null;
           notebook_id: string;
           title: string;
         };
@@ -74,7 +69,6 @@ export interface Database {
           created_at?: string;
           icon_id?: string;
           id?: string;
-          in_trash?: string | null;
           notebook_id?: string;
           title?: string;
         };
@@ -153,24 +147,21 @@ export interface Database {
         Row: {
           created_at: string;
           id: string;
-          in_trash: string | null;
-          notebook_user: string;
+          user_id: string;
           pomodoro_count: number;
           title: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
-          in_trash?: string | null;
-          notebook_user: string;
+          user_id: string;
           pomodoro_count?: number;
           title: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          in_trash?: string | null;
-          notebook_user?: string;
+          user_id?: string;
           pomodoro_count?: number;
           title?: string;
         };

@@ -13,7 +13,7 @@ const Dashboard = async () => {
   if (!user) return;
 
   const notebook = await db.query.notebooks.findFirst({
-    where: (notebook, { eq }) => eq(notebook.notebookUser, user.id),
+    where: (notebook, { eq }) => eq(notebook.userId, user.id),
   });
 
   if (!notebook) {

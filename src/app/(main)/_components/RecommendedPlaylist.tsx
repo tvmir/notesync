@@ -16,10 +16,10 @@ const RecommendedPlaylist: FC<RecommendedPlaylistProps> = ({
 }) => {
   return (
     <div
-      className="flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-2 border-none cursor-pointer transition p-2"
+      className="group relative flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-2 border-none cursor-pointer transition p-2"
       onClick={() => onClick(data.id)}
     >
-      <div className="relative h-[240px] w-[200px] rounded-md overflow-hidden">
+      <div className="relative h-[160px] w-[130px] md:h-[240px] md:w-[200px] rounded-md overflow-hidden">
         <Image
           src={'/foryou-cover.jpeg'}
           fill

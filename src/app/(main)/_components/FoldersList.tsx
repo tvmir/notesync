@@ -55,7 +55,6 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
       createdAt: new Date().toISOString(),
       title: 'Untitled',
       iconId: '📝',
-      inTrash: null,
       notebookId,
     };
 
@@ -102,17 +101,15 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
         defaultValue={[folderId || '']}
         className="pb-20"
       >
-        {userFolders
-          .filter((folder) => !folder.inTrash)
-          .map((folder) => (
-            <SidebarDropdown
-              key={folder.id}
-              id={folder.id}
-              title={folder.title}
-              iconId={folder.iconId}
-              type="folder"
-            />
-          ))}
+        {userFolders.map((folder) => (
+          <SidebarDropdown
+            key={folder.id}
+            id={folder.id}
+            title={folder.title}
+            iconId={folder.iconId}
+            type="folder"
+          />
+        ))}
       </Accordion>
     </>
   );

@@ -13,9 +13,9 @@ const NotebookPage: FC<NotebookProps> = async ({ params }) => {
   const recommendedSongs = await useRecommendedSongs();
 
   return (
-    <div className="relative h-full pt-20">
+    <div className="h-full pt-20">
       <Metrics notebookId={params?.notebookId} />
-      <div>
+      <div className="overflow-y-scroll">
         <PlaylistView songs={songs!} recommendedSongs={recommendedSongs!} />
       </div>
     </div>

@@ -27,8 +27,7 @@ const NewNotebook: FC = () => {
         createdAt: new Date().toISOString(),
         id: notebookUUID,
         title,
-        notebookUser: user.id,
-        inTrash: '',
+        userId: user.id,
         pomodoroCount: 0,
       };
 

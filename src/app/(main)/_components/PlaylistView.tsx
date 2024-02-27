@@ -31,8 +31,12 @@ const PlaylistView: FC<PlaylistViewProps> = ({ songs, recommendedSongs }) => {
         return acc;
       }, {})
     ).sort(([genreA], [genreB]) => {
-      if (genreA === 'lo-fi') return -1;
-      return genreB === 'lo-fi' ? 1 : 0;
+      const order: Record<string, number> = {
+        'lo-fi': 1,
+        classical: 2,
+        binaural: 0,
+      };
+      return (order[genreA] || Infinity) - (order[genreB] || Infinity);
     })
   );
 
@@ -41,7 +45,7 @@ const PlaylistView: FC<PlaylistViewProps> = ({ songs, recommendedSongs }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pl-[9px]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 pl-[9px]">
       {recommendedSongs.length !== 0 &&
         Object.entries(recommendedPlaylist).map(([_, songs], i) => (
           <RecommendedPlaylist
