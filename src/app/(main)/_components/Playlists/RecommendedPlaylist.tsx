@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { FC } from 'react';
-import PlayButton from './PlayButton';
+import PlayButton from '../Player/PlayButton';
 import { Song } from '@/types/supabase';
 
 interface RecommendedPlaylistProps {

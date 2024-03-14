@@ -24,6 +24,7 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
   useEffect(() => {
     if (!user?.id) return;
 
+    // Getting the user's liked songs
     const fetchUserSongData = async () => {
       const { data, error } = await supabase
         .from('liked_songs')
@@ -40,6 +41,7 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
     fetchUserSongData();
   }, [user?.id, songId, supabase]);
 
+  // Function for liking/unliking a song
   const handleLikeTrigger = async () => {
     if (!user) redirect('/');
 

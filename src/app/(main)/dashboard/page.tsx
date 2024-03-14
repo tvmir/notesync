@@ -1,6 +1,6 @@
 import db from '@/lib/supabase/db';
 import { redirect } from 'next/navigation';
-import CreateNotebookSetup from '../_components/CreateNotebookSetup';
+import CreateNotebookSetup from '../_components/Notebooks/CreateNotebookSetup';
 import supabaseServer from '@/lib/supabase/supabaseServer';
 
 const Dashboard = async () => {

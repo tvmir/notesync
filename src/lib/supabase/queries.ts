@@ -6,12 +6,18 @@ import {
   folders,
   likedSongs,
   notebooks,
-  recommendedSongs,
   songs,
-  users,
+  tasks,
 } from '../../../migrations/schema';
 import { and, eq } from 'drizzle-orm';
-import { File, Folder, LikedSong, Notebook, Song } from '@/types/supabase';
+import {
+  File,
+  Folder,
+  LikedSong,
+  Notebook,
+  Song,
+  Task,
+} from '@/types/supabase';
 
 export const createNotebook = async (notebook: Notebook) => {
   try {
@@ -41,6 +47,7 @@ export const fetchNotebooks = async (userId: string) => {
       userId: notebooks.userId,
       title: notebooks.title,
       pomodoroCount: notebooks.pomodoroCount,
+      timeSpent: notebooks.timeSpent,
     })
     .from(notebooks)
     .where(eq(notebooks.userId, userId))) as Notebook[];
@@ -256,6 +263,51 @@ export const likeSong = async (userId: string, songId: string) => {
     return {
       data: null,
       error: 'Error: Unable to like song',
+    };
+  }
+};
+
+export const fetchTasks = async (notebookId: string) => {
+  const isValid = validate(notebookId);
+
+  if (!isValid)
+    return {
+      data: null,
+      error: 'Error: This folder does not exist.',
+    };
+
+  try {
+    const res = await db
+      .select()
+      .from(tasks)
+      .orderBy(tasks.createdAt)
+      .where(eq(tasks.notebookId, notebookId));
+
+    return {
+      data: res,
+      error: null,
+    };
+  } catch (error) {
+    console.log(error);
+
+    return { data: null, error: 'Error: Unable to fetch tasks' };
+  }
+};
+
+export const createTask = async (task: Task) => {
+  try {
+    await db.insert(tasks).values(task);
+
+    return {
+      data: null,
+      error: null,
+    };
+  } catch (error) {
+    console.log('Create Task Error: ', error);
+
+    return {
+      data: null,
+      error: 'Error: Unable to create task',
     };
   }
 };

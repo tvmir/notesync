@@ -10,9 +10,11 @@ interface CustomSliderProps {
 }
 
 const CustomSlider: FC<CustomSliderProps> = ({ value, onChange }) => {
+  // Dictates the volume value based on the slider
   const handleVolChange = (newValue: number[]) => {
     onChange?.(newValue[0]);
   };
+
   return (
     <Slider
       defaultValue={[1]}

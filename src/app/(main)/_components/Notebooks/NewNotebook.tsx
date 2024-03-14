@@ -29,14 +29,16 @@ const NewNotebook: FC = () => {
         title,
         userId: user.id,
         pomodoroCount: 0,
+        timeSpent: 0,
       };
+
+      await createNotebook(newNotebook);
 
       toast({
         title: 'Success',
         description: 'Notebook has been created successfully!',
       });
 
-      await createNotebook(newNotebook);
       router.refresh();
     }
     setIsLoading(false);
@@ -52,9 +54,7 @@ const NewNotebook: FC = () => {
           <Input
             name="name"
             value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
       </div>

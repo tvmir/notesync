@@ -15,6 +15,7 @@ const PlaylistSongItem: FC<PlaylistSongItemProps> = ({ data, onClick }) => {
   const { dispatch } = usePlayer();
   const imageUrl = useLoadImage(data);
 
+  // Plays the songs in the playlist once it's been clicked
   const handleClick = () => {
     if (onClick) {
       return onClick(data.id);

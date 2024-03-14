@@ -3,6 +3,7 @@ import { Song } from '@/types/supabase';
 import { fetchSongByID } from '@/lib/supabase/queries';
 import { useToast } from '@/components/ui/use-toast';
 
+// Get the current song played by the ID
 export const useFetchSongByID = (id: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [song, setSong] = useState<Song | undefined>(undefined);

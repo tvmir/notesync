@@ -3,6 +3,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+// Helper function to get the user's session
 export default async function createSupabaseServerClient() {
   const cookieStore = cookies();
 

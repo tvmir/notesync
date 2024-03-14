@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Metrics from '../../_components/Metrics';
 import { fetchSongs } from '@/lib/supabase/queries';
-import PlaylistView from '../../_components/PlaylistView';
+import PlaylistView from '../../_components/Playlists/PlaylistView';
 import { useRecommendedSongs } from '@/hooks/useRecommendedSongs';
 
 interface NotebookProps {

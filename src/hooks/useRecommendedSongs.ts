@@ -1,6 +1,7 @@
 import supabaseServer from '@/lib/supabase/supabaseServer';
 import { Song } from '@/types/supabase';
 
+// Get the recommended songs that have been generated from the model
 export const useRecommendedSongs = async (): Promise<Song[]> => {
   const supabase = supabaseServer();
 
@@ -13,10 +14,7 @@ export const useRecommendedSongs = async (): Promise<Song[]> => {
     .select('*, songs(*)')
     .eq('user_id', user?.id);
 
-  if (error) {
-    console.log('Error: Unable to fetch recommended songs');
-    return [];
-  }
+  if (error) return [];
 
   if (!data) return [];
 

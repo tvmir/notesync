@@ -2,8 +2,8 @@
 
 import { Song } from '@/types/supabase';
 import { FC, useEffect, useState } from 'react';
-import PlaylistSongItem from './PlaylistSongItem';
-import IsLikedButton from './IsLikedButton';
+import PlaylistSongItem from '../Playlists/PlaylistSongItem';
+import IsLikedButton from '../IsLikedButton';
 import {
   PauseCircle,
   PlayCircle,
@@ -30,6 +30,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
   const PlayIcon = isPlaying ? PauseCircle : PlayCircle;
   const VolumeSliderIcon = volume === 0 ? VolumeX : Volume2;
 
+  // Checks the song ID of the previous song in the list, if it's the first song in the playlist nothing happens
   const playPreviousSong = () => {
     if (state.ids.length === 0) return;
 
@@ -50,6 +51,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
     });
   };
 
+  // Responsible for the player functionality
   const [play, { pause, sound }] = useSound(songFile, {
     volume: volume,
     onplay: () => setIsPlaying(true),
@@ -69,6 +71,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
     };
   }, [sound]);
 
+  // Plays/pauses the current song
   const playSong = () => {
     if (!isPlaying) {
       play();
@@ -77,6 +80,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
     }
   };
 
+  // Checks the song ID of the next song in the list and plays it accordingly
   const playNextSong = () => {
     if (state.ids.length === 0) return;
 
@@ -97,6 +101,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
     });
   };
 
+  // Handles mute/unmute
   const toggleVolumeMute = () => {
     if (volume === 0) {
       setVolume(1);
@@ -130,19 +135,17 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
           onClick={playNextSong}
         />
       </div>
-      <div className="flex justify-end">
-        <IsLikedButton songId={song.id} />
-      </div>
-      {/* <div className="hidden md:flex w-full justify-end pr-2">
-        <div className="flex items-center gap-x-2 w-[120px]">
+      <div className="flex justify-between">
+        <div className="flex items-center gap-x-2 w-[95px]">
           <VolumeSliderIcon
             className="cursor-pointer"
             onClick={toggleVolumeMute}
-            size={30}
+            size={20}
           />
           <CustomSlider value={volume} onChange={(value) => setVolume(value)} />
         </div>
-      </div> */}
+        <IsLikedButton songId={song.id} />
+      </div>
     </div>
   );
 };

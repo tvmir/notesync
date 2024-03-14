@@ -9,7 +9,7 @@ import { Folder } from '@/types/supabase';
 import { PlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
-import SidebarDropdown from './SidebarDropdown';
+import SidebarDropdown from './Sidebar/SidebarDropdown';
 import { Separator } from '@/components/ui/separator';
 
 interface FoldersListProps {
@@ -22,6 +22,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
   const [userFolders, setUserFolders] = useState<Folder[]>(folders);
   const { toast } = useToast();
 
+  // Show the folders and its files
   useEffect(() => {
     if (folders.length > 0) {
       dispatch({
@@ -49,7 +50,8 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
     );
   }, [state, notebookId]);
 
-  const folderHandler = async () => {
+  // Creating a new folder and displaying it in the sidebar
+  const addFolderHandler = async () => {
     const initiatedFolder: Folder = {
       id: v4(),
       createdAt: new Date().toISOString(),
@@ -70,6 +72,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
     });
 
     const { error } = await createFolder(initiatedFolder);
+
     if (error) {
       toast({
         title: 'Error',
@@ -89,7 +92,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
         <span className="text-primary/70 text-sm capitalize">Folders</span>
         <CustomTooltip message="Create Folder">
           <PlusIcon
-            onClick={folderHandler}
+            onClick={addFolderHandler}
             size={16}
             className="group-hover/title:inline-block hidden cursor-pointer hover:text-white"
           />
