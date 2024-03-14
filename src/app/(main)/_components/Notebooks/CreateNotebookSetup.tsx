@@ -51,6 +51,7 @@ const CreateNotebookSetup: FC<CreateNotebookSetupProps> = ({ user }) => {
         title: value.notebookName,
         userId: user.id,
         pomodoroCount: 0,
+        timeSpent: 0,
       };
 
       const { error } = await createNotebook(newNotebook);

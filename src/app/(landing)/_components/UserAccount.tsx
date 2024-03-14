@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,6 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import UserAvatar from './UserAvatar';
-import { User } from '@/types/supabase';
 import { createBrowserClient } from '@supabase/ssr';
 import { useToast } from '@/components/ui/use-toast';
 import { redirect, useRouter } from 'next/navigation';

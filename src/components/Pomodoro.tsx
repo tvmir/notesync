@@ -43,6 +43,7 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
 
   const { toast } = useToast();
 
+  // Duration times
   const durations = [
     { id: 1, label: '1 minutes' },
     { id: 20, label: '20 minutes' },
@@ -52,6 +53,7 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
     { id: 60, label: '60 minutes' },
   ];
 
+  // Break times
   const breaks: Timer[] = useMemo(
     () => [
       { id: 1, label: '1 minutes' },
@@ -67,6 +69,7 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
     if (hasTimerStarted) {
       let timer: NodeJS.Timeout;
 
+      // Timer functionality
       const tick = () => {
         if (!isPaused) {
           if (seconds === 0) {
@@ -101,11 +104,12 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
   ]);
 
   useEffect(() => {
+    // Updating the number of completed pomodoro sessions on the server
     const updateCount = async () => {
       if (!notebookId) return;
 
       if (isCount) {
-        const { data, error } = await incrementPomodoroCounter({
+        const { error } = await incrementPomodoroCounter({
           x: 1,
           row_id: notebookId,
         });
@@ -116,8 +120,6 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
             description: 'Something went wrong with the pomodoro counter.',
           });
         }
-
-        console.log('COUNT: ', data);
       }
 
       setIsCount(false);

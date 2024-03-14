@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { redirect } from 'next/navigation';
 import { fetchFolders, fetchNotebooks } from '@/lib/supabase/queries';
-import { ScrollArea } from '../../../components/ui/scroll-area';
-import FoldersList from './FoldersList';
+import { ScrollArea } from '../../../../components/ui/scroll-area';
+import FoldersList from '../FoldersList';
 import SidebarItems from './SidebarItems';
 import supabaseServer from '@/lib/supabase/supabaseServer';
-import Player from './Player';
+import Player from '../Player';
 
 interface SidebarProps {
   params: { notebookId: string };
@@ -21,10 +21,12 @@ const Sidebar: FC<SidebarProps> = async ({ params, className }) => {
 
   if (!user) return;
 
+  // Gets all the folders based on the notebook ID
   const { data: notebookFolders, error } = await fetchFolders(
     params.notebookId
   );
 
+  // Gets all the notebooks for the user
   const allUserNotebooks = await fetchNotebooks(user.id);
 
   if (error) redirect('/dashboard');

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import supabaseServer from './lib/supabase/supabaseServer';
 
+// Redirect the user to the log in page if they have not signed in
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const {

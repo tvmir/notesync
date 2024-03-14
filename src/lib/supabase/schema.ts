@@ -38,6 +38,7 @@ export const notebooks = pgTable('notebooks', {
     .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   title: text('title').notNull(),
   pomodoroCount: smallint('pomodoro_count').default(0),
+  timeSpent: integer('time_spent').default(0),
 });
 
 // Folders Table
@@ -95,6 +96,7 @@ export const songs = pgTable('songs', {
   genre: text('genre'),
 });
 
+// Liked Songs Table
 export const likedSongs = pgTable(
   'liked_songs',
   {
@@ -119,6 +121,7 @@ export const likedSongs = pgTable(
   }
 );
 
+// Recommended Songs Table
 export const recommendedSongs = pgTable(
   'recommended_songs',
   {
@@ -141,3 +144,21 @@ export const recommendedSongs = pgTable(
     };
   }
 );
+
+// Tasks Table
+export const tasks = pgTable('tasks', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  createdAt: timestamp('created_at', {
+    withTimezone: true,
+    mode: 'string',
+  })
+    .defaultNow()
+    .notNull(),
+  task: text('task').notNull(),
+  status: text('status').notNull(),
+  notebookId: uuid('notebook_id')
+    .notNull()
+    .references(() => notebooks.id, {
+      onDelete: 'cascade',
+    }),
+});

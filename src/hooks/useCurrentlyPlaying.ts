@@ -7,6 +7,7 @@ interface Playing {
   recommendedSongs?: Song[];
 }
 
+// Get the current song that is being played
 export const useCurrentlyPlaying = ({ songs, recommendedSongs }: Playing) => {
   const { dispatch } = usePlayer();
 

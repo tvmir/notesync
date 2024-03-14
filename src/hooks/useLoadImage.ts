@@ -1,6 +1,7 @@
 import { Song } from '@/types/supabase';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
+// Get the song covers from Supabase Storage
 export const useLoadImage = (song: Song) => {
   const supabase = createClientComponentClient();
 

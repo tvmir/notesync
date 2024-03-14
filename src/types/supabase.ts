@@ -6,6 +6,7 @@ import {
   notebooks,
   recommendedSongs,
   songs,
+  tasks,
   users,
 } from '../../migrations/schema';
 
@@ -17,7 +18,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       files: {
@@ -77,38 +78,50 @@ export interface Database {
       liked_songs: {
         Row: {
           created_at: string;
+          like_count: number | null;
           song_id: string;
           user_id: string;
-          like_count: number;
         };
         Insert: {
           created_at?: string;
+          like_count?: number | null;
           song_id: string;
           user_id: string;
-          like_count: number;
         };
         Update: {
           created_at?: string;
+          like_count?: number | null;
           song_id?: string;
           user_id?: string;
-          like_count: number;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'liked_songs_song_id_fkey';
-            columns: ['song_id'];
-            isOneToOne: false;
-            referencedRelation: 'songs';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'liked_songs_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          }
-        ];
+        Relationships: [];
+      };
+      notebooks: {
+        Row: {
+          created_at: string;
+          id: string;
+          pomodoro_count: number | null;
+          time_spent: number;
+          title: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          pomodoro_count?: number | null;
+          time_spent: number;
+          title: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          pomodoro_count?: number | null;
+          time_spent?: number;
+          title?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       recommended_songs: {
         Row: {
@@ -125,45 +138,6 @@ export interface Database {
           created_at?: string;
           song_id?: string;
           user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'recommended_songs_song_id_fkey';
-            columns: ['song_id'];
-            isOneToOne: false;
-            referencedRelation: 'songs';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'recommended_songs_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          }
-        ];
-      };
-      notebooks: {
-        Row: {
-          created_at: string;
-          id: string;
-          user_id: string;
-          pomodoro_count: number;
-          title: string;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          user_id: string;
-          pomodoro_count?: number;
-          title: string;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          user_id?: string;
-          pomodoro_count?: number;
-          title?: string;
         };
         Relationships: [];
       };
@@ -194,6 +168,30 @@ export interface Database {
           image_file?: string | null;
           song_file?: string | null;
           track_name?: string | null;
+        };
+        Relationships: [];
+      };
+      tasks: {
+        Row: {
+          created_at: string;
+          id: string;
+          notebook_id: string;
+          status: string;
+          task: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          notebook_id: string;
+          status: string;
+          task: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          notebook_id?: string;
+          status?: string;
+          task?: string;
         };
         Relationships: [];
       };
@@ -232,7 +230,13 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      increment_pomodoro: {
+        Args: {
+          x: number;
+          row_id: string;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;
@@ -241,7 +245,7 @@ export interface Database {
       [_ in never]: never;
     };
   };
-}
+};
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -330,3 +334,4 @@ export type File = InferSelectModel<typeof files>;
 export type Song = InferSelectModel<typeof songs>;
 export type LikedSong = InferSelectModel<typeof likedSongs>;
 export type RecommendedSong = InferSelectModel<typeof recommendedSongs>;
+export type Task = InferSelectModel<typeof tasks>;

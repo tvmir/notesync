@@ -1,5 +1,6 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
+// Helper function to increment the pomodoro count
 export const incrementPomodoroCounter = async ({
   x,
   row_id,

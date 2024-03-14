@@ -21,9 +21,7 @@ interface CreationDialogProps {
 const CreationDialog: FC<CreationDialogProps> = ({
   header,
   content,
-  children,
   description,
-  className,
   defaultOpen,
 }) => {
   const { isOpen, setClose } = useModal();

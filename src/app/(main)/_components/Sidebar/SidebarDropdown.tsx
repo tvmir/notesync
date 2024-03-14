@@ -36,7 +36,6 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
   ...props
 }) => {
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { toast } = useToast();
 
   const { state, dispatch, folderId, notebookId } = useAppState();
@@ -46,11 +45,12 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     () =>
       clsx('relative', {
         'border-none text-md': isFolder,
-        'border-none ml-6 text-[16px] py-1': !isFolder,
+        'border-none ml-6 text-[16px]': !isFolder,
       }),
     [isFolder]
   );
 
+  // Navigates to the folder/file page once it's been clicked
   const navigateToPage = (fId: string, type: string) => {
     if (type === 'folder') {
       router.push(`/dashboard/${notebookId}/${fId}`);
@@ -63,14 +63,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     }
   };
 
-  const identifier = clsx(
-    'relative text-white whitespace-nowrap flex justify-between items-center w-full',
-    {
-      'group/folder': isFolder,
-      'group/file': !isFolder,
-    }
-  );
-
+  // Responsible for changing the emoji icon of the folder
   const onChangeEmojiHandler = async (selected: string) => {
     if (type === 'folder') {
       if (notebookId)
@@ -83,7 +76,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
           },
         });
 
-      const { data, error } = await updateFolder({ iconId: selected }, id);
+      const { error } = await updateFolder({ iconId: selected }, id);
 
       if (error) {
         toast({
@@ -95,6 +88,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     }
   };
 
+  // Updates the folder title
   const folderTitle: string | undefined = useMemo(() => {
     if (type === 'folder') {
       const fTitle = state.notebooks
@@ -106,60 +100,6 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
       return fTitle;
     }
   }, [state, type, notebookId, id, title]);
-
-  const fileTitle: string | undefined = useMemo(() => {
-    if (type === 'file') {
-      const ffId = id.split('folder');
-
-      const fTitle = state.notebooks
-        .find((notebook) => notebook.id === notebookId)
-        ?.folders.find((folder) => folder.id === ffId[0])
-        ?.files.find((file) => file.id === ffId[1])?.title;
-
-      if (title === fTitle || !fTitle) return title;
-
-      return fTitle;
-    }
-  }, [state, type, notebookId, id, title]);
-
-  const handleClickInput = () => {
-    setIsEditing(true);
-  };
-
-  const handleBlur = async () => {
-    if (!isEditing) return;
-    setIsEditing(false);
-
-    const fId = id.split('folder');
-
-    if (fId.length === 1) {
-      if (!folderTitle) return;
-
-      toast({
-        description: 'Folder title has been changed.',
-      });
-      await updateFolder({ title }, fId[0]);
-    }
-
-    if (fId.length === 2 && fId[1]) {
-      if (!fileTitle) return;
-
-      const { error } = await updateFile({ title: fileTitle }, fId[1]);
-
-      if (error) {
-        toast({
-          title: 'Error',
-          variant: 'destructive',
-          description:
-            'Unable to update the title for this file, please try again',
-        });
-      } else
-        toast({
-          title: 'Success',
-          description: `File title has been changed to: ${fileTitle}`,
-        });
-    }
-  };
 
   const folderTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (!notebookId) return;
@@ -176,6 +116,22 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
       });
     }
   };
+
+  // Updates the file title
+  const fileTitle: string | undefined = useMemo(() => {
+    if (type === 'file') {
+      const ffId = id.split('folder');
+
+      const fTitle = state.notebooks
+        .find((notebook) => notebook.id === notebookId)
+        ?.folders.find((folder) => folder.id === ffId[0])
+        ?.files.find((file) => file.id === ffId[1])?.title;
+
+      if (title === fTitle || !fTitle) return title;
+
+      return fTitle;
+    }
+  }, [state, type, notebookId, id, title]);
 
   const fileTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const fId = id.split('folder');
@@ -250,38 +206,38 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     >
       <AccordionTrigger
         id={type}
-        className="hover:no-underline p-2 text-muted-foreground text-sm"
+        className="hover:no-underline text-muted-foreground text-sm pt-[13px] pb-[14px]"
         disabled={type === 'file'}
       >
-        <div className={identifier}>
-          <div className="flex gap-4 items-center justify-center overflow-hidden">
-            <div className="relative flex gap-x-3">
+        <div
+          className={clsx(
+            'relative text-white whitespace-nowrap flex justify-between items-center w-full',
+            {
+              'group/folder': isFolder,
+              'group/file': !isFolder,
+            }
+          )}
+        >
+          <div className="flex gap-2 items-center justify-center overflow-hidden">
+            <div className="relative flex gap-x-1">
               <EmojiPicker getEmoji={onChangeEmojiHandler}>
                 {iconId}
               </EmojiPicker>
             </div>
             <input
               type="text"
-              readOnly={!isEditing}
-              onDoubleClick={handleClickInput}
-              onBlur={handleBlur}
+              readOnly
               onChange={
                 type === 'folder'
                   ? folderTitleChangeHandler
                   : fileTitleChangeHandler
               }
               value={type === 'folder' ? folderTitle : fileTitle}
-              className={clsx(
-                'outline-none overflow-hidden w-[140px] text-primary text-sm',
-                {
-                  'bg-muted cursor-text': isEditing,
-                  'bg-transparent cursor-pointer': !isEditing,
-                }
-              )}
+              className="outline-none overflow-hidden w-[140px] text-primary text-sm bg-transparent cursor-pointer"
             />
           </div>
           <div className={hoverStyles}>
-            {type === 'folder' && !isEditing && (
+            {type === 'folder' && (
               <CustomTooltip message="Add File">
                 <PlusIcon
                   onClick={addNewFile}
@@ -293,7 +249,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent>
+      <AccordionContent onClick={() => navigateToPage(id, type)}>
         {state.notebooks
           .find((notebook) => notebook.id === notebookId)
           ?.folders.find((folder) => folder.id === id)

@@ -15,9 +15,12 @@ import { File } from '@/types/supabase';
 import { updateFile } from '@/lib/supabase/queries';
 import type EditorJS from '@editorjs/editorjs';
 import { useToast } from '@/components/ui/use-toast';
-import { OutputBlockData, OutputData } from '@editorjs/editorjs';
+import { OutputData } from '@editorjs/editorjs';
 import TextareaAutosize from 'react-textarea-autosize';
-import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: '.env' });
 
 interface EditorProps {
   fileId: string;
@@ -29,29 +32,18 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
   const titleRef = useRef<ElementRef<'textarea'>>(null);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [encryptionKey, setEncryptionKey] = useState<Buffer | null>(null);
-  const [encryptionIV, setEncryptionIV] = useState<Buffer | null>(null);
   const { toast } = useToast();
 
   const { state, dispatch, notebookId, folderId } = useAppState();
 
-  useEffect(() => {
-    // Generate encryption key and IV
-    const key = crypto.randomBytes(32); // 256-bit key
-    const iv = crypto.randomBytes(16); // 128-bit IV
-    setEncryptionKey(key);
-    setEncryptionIV(iv);
-  }, []);
-
+  // Checking if the file has any content inside of it
   const editorContent = useMemo(() => {
     const fileContent = state.notebooks
       .find((notebook) => notebook.id === notebookId)
       ?.folders.find((folder) => folder.id === folderId)
       ?.files.find((file) => file.id === fileId);
 
-    if (fileContent) {
-      return fileContent;
-    }
+    if (fileContent) return fileContent;
 
     return {
       title: file?.title,
@@ -63,6 +55,7 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
 
   const [inputVal, setInputVal] = useState<string>(editorContent.title);
 
+  // Updating title in real-time to be displayed on the sidebar
   const enableInputTitle = () => {
     setIsEditing(true);
     setTimeout(() => {
@@ -106,26 +99,35 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
     }
   };
 
-  // Encryption function
-  function encrypt(data: any, key: Buffer, iv: Buffer): string {
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-    let encryptedData = cipher.update(data, 'utf-8', 'hex');
-    encryptedData += cipher.final('hex');
-    return encryptedData;
-  }
+  // Data encryption of the file's content
+  const encryptData = (data: any) => {
+    const encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify(data),
+      process.env.C_SECRET_KEY || ''
+    ).toString();
+    return encrypted;
+  };
 
-  // Decryption function
-  function decrypt(
-    encryptedData: string,
-    key: Buffer,
-    iv: Buffer
-  ): OutputBlockData[] {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-    let decryptedData = decipher.update(encryptedData, 'hex', 'utf-8');
-    decryptedData += decipher.final('utf-8');
-    return JSON.parse(decryptedData) as OutputBlockData[];
-  }
+  // Data decryption of the file's content
+  const decryptData = (encryptedData: any) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(
+        encryptedData,
+        process.env.C_SECRET_KEY || ''
+      );
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
 
+      if (decrypted) {
+        // console.log('Decryption successful:', decrypted);
+        return JSON.parse(decrypted);
+      }
+    } catch (error) {
+      console.error('Error decrypting data:', error);
+      return null;
+    }
+  };
+
+  // Initializing editor
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
     const Header = (await import('@editorjs/header')).default;
@@ -143,34 +145,28 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         onReady() {
           ref.current = editor;
         },
+        // Autosave feature
         onChange: async () => {
           const blocks = await ref.current?.save();
 
-          // if (!notebookId || !folderId || !encryptionKey || !encryptionIV)
-          //   return;
-
           if (!notebookId || !folderId) return;
 
-          // // Encrypt JSON data before updating in the database
-          // const jsonData = JSON.stringify(blocks);
-
-          // console.log('JSON: ', jsonData);
-
-          // const encryptedData = encrypt(jsonData, encryptionKey, encryptionIV);
-
-          // console.log('ENCRYPTED: ', encryptedData);
+          const encryptedBlocks = encryptData(blocks);
 
           dispatch({
             type: 'UPDATE_FILE',
             payload: {
-              file: { content: blocks },
+              file: { content: encryptedBlocks },
               notebookId,
               folderId: folderId,
               fileId,
             },
           });
 
-          const { error } = await updateFile({ content: blocks }, fileId);
+          const { error } = await updateFile(
+            { content: encryptedBlocks },
+            fileId
+          );
 
           if (error) {
             toast({
@@ -182,17 +178,8 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         placeholder: 'Type here to write your note...',
         inlineToolbar: true,
         data: {
-          blocks: (editorContent.content as OutputData).blocks,
+          blocks: decryptData(editorContent.content as OutputData)?.blocks,
         },
-        // data: {
-        //   blocks: editorContent.content
-        //     ? decrypt(
-        //         (editorContent.content as any).blocks,
-        //         encryptionKey!,
-        //         encryptionIV!
-        //       )
-        //     : [],
-        // },
         tools: {
           header: Header,
           linkTool: {

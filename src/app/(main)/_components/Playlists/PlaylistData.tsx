@@ -3,7 +3,7 @@
 import { Song } from '@/types/supabase';
 import Image from 'next/image';
 import { FC } from 'react';
-import PlayButton from './PlayButton';
+import PlayButton from '../Player/PlayButton';
 
 interface PlaylistDataProps {
   data: Song;
@@ -27,6 +27,7 @@ const PlaylistData: FC<PlaylistDataProps> = ({ data, onClick }) => {
           }
           fill
           alt="Cover Image"
+          unoptimized={true}
           className="object-cover transition-all hover:scale-105"
         />
       </div>

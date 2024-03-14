@@ -3,8 +3,8 @@
 import { useAppState } from '@/lib/providers/state';
 import { Notebook } from '@/types/supabase';
 import { FC, useEffect, useMemo, useState } from 'react';
-import NewNotebook from './NewNotebook';
-import CreationDialog from './CreationDialog';
+import NewNotebook from '../Notebooks/NewNotebook';
+import CreationDialog from '../Notebooks/CreationDialog';
 import {
   Sheet,
   SheetClose,
@@ -44,7 +44,7 @@ const SidebarItems: FC<SidebarItemsProps> = ({
   const { setOpen } = useModal();
   const { isMobile } = useMobile();
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const { state, dispatch } = useAppState();
+  const { notebookId, state, dispatch } = useAppState();
 
   useEffect(() => {
     setIsMounted(true);
@@ -93,9 +93,11 @@ const SidebarItems: FC<SidebarItemsProps> = ({
         })}
       >
         <div>
-          <p className="hidden text-primary text-xl font-medium md:block pt-3">
-            notesync
-          </p>
+          <Link href={`/dashboard/${notebookId}`}>
+            <p className="hidden text-primary text-xl font-medium md:block pt-3">
+              notesync
+            </p>
+          </Link>
           <Popover>
             <PopoverTrigger asChild>
               <Button
