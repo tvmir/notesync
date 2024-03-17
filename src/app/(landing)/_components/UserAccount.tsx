@@ -8,14 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import UserAvatar from './UserAvatar';
-import { createBrowserClient } from '@supabase/ssr';
 import { useToast } from '@/components/ui/use-toast';
 import { redirect, useRouter } from 'next/navigation';
 import { AuthUser } from '@supabase/supabase-js';
 import { useMobile } from '@/lib/providers/use-mobile-state';
+import { createSupabaseBrowserClient } from '@/lib/supabase/supabase-browser';
 
 interface UserAccountProps {
   user: AuthUser;
@@ -26,12 +25,9 @@ const UserAccount: FC<UserAccountProps> = ({ user }) => {
   const { isMobile } = useMobile();
   const { toast } = useToast();
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const signOutWithGoogle = async () => {
+    const supabase = createSupabaseBrowserClient();
+
     const { error } = await supabase.auth.signOut();
 
     if (error) {
@@ -44,7 +40,7 @@ const UserAccount: FC<UserAccountProps> = ({ user }) => {
     }
 
     router.refresh();
-    redirect('/');
+    router.replace('/');
   };
 
   return (
@@ -91,18 +87,6 @@ const UserAccount: FC<UserAccountProps> = ({ user }) => {
                 )}
               </div>
             </div>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem asChild>
-              <Link href="/">Home</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard">Dashboard</Link>
-            </DropdownMenuItem>
-            {/* <DropdownMenuItem asChild>
-                <Link href="/settings">Settings</Link>
-              </DropdownMenuItem> */}
 
             <DropdownMenuSeparator />
 

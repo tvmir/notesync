@@ -6,37 +6,35 @@ import Link from 'next/link';
 
 const Home: FC = () => {
   return (
-    <section>
+    <section className="pb-8">
       <Navbar />
       <div className="mx-auto md:w-4/5">
-        <div className="text-center pt-4 md:mt-8 mx-auto w-[90%] md:w-4/5 ">
+        <div className="text-center md:mt-8 mx-auto w-[90%] md:w-4/5 pt-8">
           <h1 className="font-bold leading-[50px] md:leading-[60px] lg:leading-[80px] inline tracking-[-1.4px] text-4xl md:text-5xl lg:text-6xl">
-            The All-In-One Note-Taking{' '}
+            Where Music Meets{' '}
           </h1>
           <span className="text-gradient font-bold tracking-[-1.4px] text-4xl md:text-5xl lg:text-6xl">
-            Tool For You
+            Productivity
           </span>
-          <p className="w-4/5 text-sm md:text-sm pt-2 mt-4 font-normal text-center tracking-loose mx-auto">
-            Take your note-taking to the next level with integrated music to
-            help you focus, powered by a recommendation system that suggests
-            personalized playlists tailored to your preferences and productivity
-            needs.
+          <p className="w-[65%] text-sm md:text-sm pt-2 mt-4 font-normal text-center tracking-loose mx-auto">
+            Elevate your productivity experience with built-in music and
+            personalized recommendations to keep you focused.
           </p>
-          <div className="flex flex-row mx-auto justify-center pt-4 mt-4 ">
+          <div className="flex flex-row mx-auto justify-center pt-4">
             <Link href="/login">
-              <Button>Get Started</Button>
+              <Button size="lg">Get Started</Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className="mt-4 pt-9 mx-auto rounded-2xl lg:w-4/5 mb-24 xl:mb-64">
+      <div className="mt-8 mx-auto border rounded-xl w-[75%]">
         <Image
           alt="Dashboard"
-          width={100}
-          height={100}
+          width={40}
+          height={40}
           unoptimized
-          src={'/landing-d1.png'}
-          className="rounded-2xl mx-auto object-cover h-full w-full"
+          src={'/landing-page.png'}
+          className="rounded-xl mx-auto object-cover h-full w-full p-2"
         />
       </div>
     </section>

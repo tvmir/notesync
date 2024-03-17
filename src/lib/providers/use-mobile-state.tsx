@@ -41,8 +41,10 @@ export const MobileProvider: FC<MobileContextProps> = ({ children }) => {
 
 export const useMobile = () => {
   const context = useContext(MobileContext);
+
   if (!context) {
     throw new Error('useMobile must be used within a MobileProvider');
   }
+
   return context;
 };

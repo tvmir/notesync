@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Sidebar from '../../_components/Sidebar';
 import UserAccount from '@/app/(landing)/_components/UserAccount';
-import supabaseServer from '@/lib/supabase/supabaseServer';
+import supabaseServer from '@/lib/supabase/supabase-server';
 import PomodoroTimer from '@/components/Pomodoro';
 
 interface NotebookProps {
@@ -11,6 +11,7 @@ interface NotebookProps {
 
 const NotebookLayout: FC<NotebookProps> = async ({ children, params }) => {
   const supabase = supabaseServer();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

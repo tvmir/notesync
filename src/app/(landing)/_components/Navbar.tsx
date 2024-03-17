@@ -6,7 +6,6 @@ const Navbar = async () => {
     <div className="backdrop-blur-sm bg-background z-50 h-20 shadow-sm">
       <div className="container p-4 mx-auto w-full flex justify-between items-center">
         <Link href="/" className="flex gap-2 items-center">
-          {/* <Icons.logo className="h-8 w-8 sm:h-6 sm:w-6" /> */}
           <p className="hidden text-primary text-xl font-medium md:block">
             notesync
           </p>

@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useToast } from '@/components/ui/use-toast';
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { createFile, updateFile, updateFolder } from '@/lib/supabase/queries';
 import { File } from '@/types/supabase';
 import clsx from 'clsx';
@@ -22,8 +22,6 @@ interface SidebarDropdownProps {
   title: string;
   type: 'folder' | 'file';
   iconId: string;
-  children?: React.ReactNode;
-  disabled?: boolean;
 }
 
 const SidebarDropdown: FC<SidebarDropdownProps> = ({
@@ -31,12 +29,10 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
   title,
   type,
   iconId,
-  children,
-  disabled,
-  ...props
 }) => {
   const router = useRouter();
   const { toast } = useToast();
+  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
 
   const { state, dispatch, folderId, notebookId } = useAppState();
 
@@ -135,6 +131,7 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
 
   const fileTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const fId = id.split('folder');
+
     if (!notebookId || !folderId) return;
 
     if (fId.length === 2 && fId[1]) {
@@ -195,6 +192,25 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
     [type]
   );
 
+  // Edit folder title directly from the sidebar
+  const handleBlur = async () => {
+    if (!isEditingTitle) return;
+
+    setIsEditingTitle(false);
+
+    const fId = id.split('folder');
+
+    if (fId.length === 1) {
+      if (!folderTitle) return;
+
+      toast({
+        description: 'Folder title has been changed.',
+      });
+
+      await updateFolder({ title }, fId[0]);
+    }
+  };
+
   return (
     <AccordionItem
       value={id}
@@ -226,14 +242,26 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
             </div>
             <input
               type="text"
-              readOnly
+              readOnly={!isEditingTitle}
+              onDoubleClick={() =>
+                type === 'folder'
+                  ? setIsEditingTitle(true)
+                  : setIsEditingTitle(false)
+              }
+              onBlur={handleBlur}
               onChange={
                 type === 'folder'
                   ? folderTitleChangeHandler
                   : fileTitleChangeHandler
               }
               value={type === 'folder' ? folderTitle : fileTitle}
-              className="outline-none overflow-hidden w-[140px] text-primary text-sm bg-transparent cursor-pointer"
+              className={clsx(
+                'outline-none overflow-hidden w-[140px] text-primary text-sm',
+                {
+                  'bg-muted/50 cursor-text h-4': isEditingTitle,
+                  'bg-transparent cursor-pointer': !isEditingTitle,
+                }
+              )}
             />
           </div>
           <div className={hoverStyles}>
@@ -249,12 +277,14 @@ const SidebarDropdown: FC<SidebarDropdownProps> = ({
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent onClick={() => navigateToPage(id, type)}>
+
+      <AccordionContent>
         {state.notebooks
           .find((notebook) => notebook.id === notebookId)
           ?.folders.find((folder) => folder.id === id)
           ?.files.map((file) => {
             const customFileId = `${id}folder${file.id}`;
+
             return (
               <SidebarDropdown
                 key={file.id}

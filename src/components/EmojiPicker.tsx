@@ -12,7 +12,7 @@ interface EmojiPickerProps {
 const EmojiPicker: FC<EmojiPickerProps> = ({ children, getEmoji }) => {
   const Picker = dynamic(() => import('emoji-picker-react'));
 
-  const onClick = (selectedEmoji) => {
+  const onClick = (selectedEmoji: any) => {
     if (getEmoji) getEmoji(selectedEmoji.emoji);
   };
 

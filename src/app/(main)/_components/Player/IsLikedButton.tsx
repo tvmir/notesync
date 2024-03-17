@@ -6,7 +6,7 @@ import { useSupabaseUser } from '@/lib/providers/user-state';
 import { likeSong } from '@/lib/supabase/queries';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Heart } from 'lucide-react';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
 interface IsLikedButtonProps {
@@ -16,7 +16,6 @@ interface IsLikedButtonProps {
 const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
   const { state, dispatch } = usePlayer();
   const isLiked = state.likedSongs?.includes(songId);
-  const router = useRouter();
   const { user } = useSupabaseUser();
   const { toast } = useToast();
   const supabase = createClientComponentClient();
@@ -39,7 +38,7 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
     };
 
     fetchUserSongData();
-  }, [user?.id, songId, supabase]);
+  }, [user?.id, songId, supabase]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Function for liking/unliking a song
   const handleLikeTrigger = async () => {
@@ -74,8 +73,6 @@ const IsLikedButton: FC<IsLikedButtonProps> = ({ songId }) => {
         dispatch({ type: 'LIKE_SONG', payload: songId });
       }
     }
-
-    router.refresh();
   };
 
   return (

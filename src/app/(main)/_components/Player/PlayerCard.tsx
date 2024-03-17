@@ -3,7 +3,7 @@
 import { Song } from '@/types/supabase';
 import { FC, useEffect, useState } from 'react';
 import PlaylistSongItem from '../Playlists/PlaylistSongItem';
-import IsLikedButton from '../IsLikedButton';
+import IsLikedButton from './IsLikedButton';
 import {
   PauseCircle,
   PlayCircle,

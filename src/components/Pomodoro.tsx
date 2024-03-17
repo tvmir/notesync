@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, FC, useMemo } from 'react';
+import React, { useState, useEffect, FC, useMemo, useCallback } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
 import { MoreHorizontal, Play, Pause } from 'lucide-react';
 import { useToast } from './ui/use-toast';
 import { incrementPomodoroCounter } from '@/hooks/usePomodoro';
+import { useAppState } from '@/lib/providers/use-state';
 
 interface PomodoroProps {
   notebookId: string;
@@ -26,26 +27,47 @@ type Timer = {
 };
 
 const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
-  const [minutes, setMinutes] = useState<number>(25);
+  const { toast } = useToast();
+  const { state, dispatch } = useAppState();
+
+  const [pCount, setPCount] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(20);
   const [seconds, setSeconds] = useState<number>(0);
   const [isCount, setIsCount] = useState<boolean>(false);
   const [isWorking, setIsWorking] = useState<boolean>(true);
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [hasTimerStarted, setHasTimerStarted] = useState<boolean>(false);
   const [defaultDuration, setDefaultDuration] = useState<Timer>({
-    id: 25,
-    label: '25 minutes',
+    id: 20,
+    label: '20 minutes',
   });
   const [defaultBreak, setDefaultBreak] = useState({
     id: 5,
     label: '5 minutes',
   });
 
-  const { toast } = useToast();
+  const calculatePomodoroCount = useCallback(() => {
+    if (!notebookId) return;
+
+    const notebook = state.notebooks.find(
+      (notebook) => notebook.id === notebookId
+    );
+
+    if (!notebook) return;
+
+    return notebook.pomodoroCount;
+  }, [notebookId, state]);
+
+  useEffect(() => {
+    const currentPomodoroCount = calculatePomodoroCount();
+
+    if (currentPomodoroCount !== undefined) setPCount(currentPomodoroCount!);
+  }, [calculatePomodoroCount]);
 
   // Duration times
   const durations = [
-    { id: 1, label: '1 minutes' },
+    { id: 1, label: '1 minute' },
+    { id: 15, label: '15 minutes' },
     { id: 20, label: '20 minutes' },
     { id: 25, label: '25 minutes' },
     { id: 30, label: '30 minutes' },
@@ -56,7 +78,7 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
   // Break times
   const breaks: Timer[] = useMemo(
     () => [
-      { id: 1, label: '1 minutes' },
+      { id: 1, label: '1 minute' },
       { id: 5, label: '5 minutes' },
       { id: 10, label: '10 minutes' },
       { id: 15, label: '15 minutes' },
@@ -103,12 +125,20 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
     defaultBreak,
   ]);
 
+  // Updating the number of completed pomodoro sessions on the server and state
   useEffect(() => {
-    // Updating the number of completed pomodoro sessions on the server
     const updateCount = async () => {
       if (!notebookId) return;
 
       if (isCount) {
+        dispatch({
+          type: 'UPDATE_NOTEBOOK',
+          payload: {
+            notebook: { pomodoroCount: pCount + 1 },
+            notebookId,
+          },
+        });
+
         const { error } = await incrementPomodoroCounter({
           x: 1,
           row_id: notebookId,
@@ -126,7 +156,7 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
     };
 
     updateCount();
-  }, [isCount]);
+  }, [isCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const togglePlayPause = () => {
     setIsPaused((prev) => !prev);
@@ -160,11 +190,11 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
   return (
     <>
       <div className="flex items-center gap-2 mr-auto pl-16 md:pl-0">
-        <div className="flex flex-col">
-          <p>
+        <div className="flex space-x-4 border rounded-md p-2 max-w-32 overflow-hidden">
+          <p className="min-w-11">
             {formatTime(minutes)}:{formatTime(seconds)}
           </p>
-          <div className="flex justify-between">
+          <div className="flex justify-between space-x-1">
             <button onClick={togglePlayPause}>
               <Icon size={14} />
             </button>

@@ -5,8 +5,8 @@ import { FC, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/Icons';
-import { createBrowserClient } from '@supabase/ssr';
 import { useToast } from '@/components/ui/use-toast';
+import { createSupabaseBrowserClient } from '@/lib/supabase/supabase-browser';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -14,12 +14,9 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const loginWithGoogle = async () => {
+    const supabase = createSupabaseBrowserClient();
+
     setIsLoading(true);
 
     try {

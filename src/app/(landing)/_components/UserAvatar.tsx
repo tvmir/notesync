@@ -3,7 +3,6 @@ import Image from 'next/legacy/image';
 import { AvatarProps } from '@radix-ui/react-avatar';
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { User } from '@/types/supabase';
 import { Icons } from '@/components/Icons';
 import { AuthUser } from '@supabase/supabase-js';
 
@@ -20,12 +19,10 @@ const UserAvatar: FC<UserAvatarProps> = ({ user, isMobile, ...props }) => {
         isMobile && 'gap-0'
       )}
     >
-      <div className="text-primary text-md font-medium">
-        {user.user_metadata?.name}
-      </div>
+      <div className="text-primary text-sm">{user.user_metadata?.name}</div>
       <Avatar {...props} className="rounded-full">
         {user.user_metadata?.avatar_url ? (
-          <div className="relative aspect-square">
+          <div className="relative aspect-square h-8 w-8">
             <Image
               layout="fill"
               priority

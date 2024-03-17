@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { File } from '@/types/supabase';
 import { updateFile } from '@/lib/supabase/queries';
 import type EditorJS from '@editorjs/editorjs';
@@ -51,7 +51,7 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
       iconId: file?.iconId,
       content: file?.content,
     } as File;
-  }, [state, notebookId, folderId]);
+  }, [state, notebookId, folderId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [inputVal, setInputVal] = useState<string>(editorContent.title);
 
@@ -211,7 +211,7 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         },
       });
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -256,6 +256,13 @@ const Editor: FC<EditorProps> = ({ fileId, file }) => {
         )}
       </div>
       <div id="editor" className="prose max-w-[800px]" />
+      <p className="text-sm text-gray-500">
+        Use{' '}
+        <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">
+          Tab
+        </kbd>{' '}
+        to open the command menu.
+      </p>
     </>
   );
 };

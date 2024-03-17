@@ -2,17 +2,16 @@ import React, { FC } from 'react';
 import { redirect } from 'next/navigation';
 import { fetchFolders, fetchNotebooks } from '@/lib/supabase/queries';
 import { ScrollArea } from '../../../../components/ui/scroll-area';
-import FoldersList from '../FoldersList';
+import FoldersList from './FoldersList';
 import SidebarItems from './SidebarItems';
-import supabaseServer from '@/lib/supabase/supabaseServer';
+import supabaseServer from '@/lib/supabase/supabase-server';
 import Player from '../Player';
 
 interface SidebarProps {
-  params: { notebookId: string };
-  className?: string;
+  params: { notebookId: string; folderId: string };
 }
 
-const Sidebar: FC<SidebarProps> = async ({ params, className }) => {
+const Sidebar: FC<SidebarProps> = async ({ params }) => {
   const supabase = supabaseServer();
 
   const {

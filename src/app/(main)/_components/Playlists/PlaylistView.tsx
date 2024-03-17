@@ -48,7 +48,7 @@ const PlaylistView: FC<PlaylistViewProps> = ({ songs, recommendedSongs }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 pl-[9px]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 p-2">
       {recommendedSongs.length !== 0 &&
         Object.entries(recommendedPlaylist).map(([_, songs], i) => (
           <RecommendedPlaylist

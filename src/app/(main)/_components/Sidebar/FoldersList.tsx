@@ -3,13 +3,13 @@
 import CustomTooltip from '@/components/CustomTooltip';
 import { Accordion } from '@/components/ui/accordion';
 import { useToast } from '@/components/ui/use-toast';
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { createFolder } from '@/lib/supabase/queries';
 import { Folder } from '@/types/supabase';
 import { PlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
-import SidebarDropdown from './Sidebar/SidebarDropdown';
+import SidebarDropdown from './SidebarDropdown';
 import { Separator } from '@/components/ui/separator';
 
 interface FoldersListProps {
@@ -41,7 +41,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
         },
       });
     }
-  }, [folders, notebookId]);
+  }, [folders, notebookId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setUserFolders(
@@ -88,7 +88,7 @@ const FoldersList: FC<FoldersListProps> = ({ folders, notebookId }) => {
 
   return (
     <>
-      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-2 text-primary">
+      <div className="flex sticky z-20 top-0 w-full h-10 group/title justify-between items-center pr-2 text-primary">
         <span className="text-primary/70 text-sm capitalize">Folders</span>
         <CustomTooltip message="Create Folder">
           <PlusIcon
