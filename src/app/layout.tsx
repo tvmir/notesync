@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import AppStateProvider from '@/lib/providers/state';
+import AppStateProvider from '@/lib/providers/use-state';
 import { Toaster } from '@/components/ui/toaster';
 import { SupabaseUserProvider } from '@/lib/providers/user-state';
 import { ThemeProvider } from '@/components/ThemeProvider';

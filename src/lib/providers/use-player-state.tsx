@@ -64,9 +64,9 @@ export const PlayerProvider: FC<{ children: React.ReactNode }> = ({
     likedSongs: [],
   });
 
-  useEffect(() => {
-    console.log('Song State Changed', state);
-  }, [state]);
+  // useEffect(() => {
+  //   console.log('Song State Changed', state);
+  // }, [state]);
 
   return (
     <PlayerContext.Provider value={{ state, dispatch }}>

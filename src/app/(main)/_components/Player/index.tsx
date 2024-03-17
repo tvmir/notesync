@@ -6,9 +6,7 @@ import { usePlayer } from '@/lib/providers/use-player-state';
 import { FC } from 'react';
 import PlayerCard from './PlayerCard';
 
-interface PlayerProps {}
-
-const Player: FC<PlayerProps> = ({}) => {
+const Player: FC = ({}) => {
   const { state } = usePlayer();
   const { song } = useFetchSongByID(state.activeId!);
   const songFile = useLoadSongFile(song!);

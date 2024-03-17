@@ -1,4 +1,4 @@
-import supabaseServer from '@/lib/supabase/supabaseServer';
+import supabaseServer from '@/lib/supabase/supabase-server';
 import { Song } from '@/types/supabase';
 
 // Get the recommended songs that have been generated from the model

@@ -29,19 +29,20 @@ export const SupabaseUserProvider: FC<SupabaseUserProviderProps> = ({
 
   const supabase = createClientComponentClient();
 
-  //Fetch the user details
   useEffect(() => {
     const getUser = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+
       if (user) {
-        console.log(user);
+        // console.log(user);
         setUser(user);
       }
     };
     getUser();
   }, [supabase, toast]);
+
   return (
     <SupabaseUserContext.Provider value={{ user }}>
       {children}

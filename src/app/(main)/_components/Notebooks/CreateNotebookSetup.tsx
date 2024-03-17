@@ -17,7 +17,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { v4 } from 'uuid';
 import { Notebook } from '@/types/supabase';
 import { createNotebook } from '@/lib/supabase/queries';
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 

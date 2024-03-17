@@ -11,60 +11,43 @@ html {
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
-
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-
     --primary: 220.9 39.3% 11%;
     --primary-foreground: 210 20% 98%;
-
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
-
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-
     --accent: 220 14.3% 95.9%;
     --accent-foreground: 220.9 39.3% 11%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
-
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 224 71.4% 4.1%;
-
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
-
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
-
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-
     --primary: 210 20% 98%;
     --primary-foreground: 220.9 39.3% 11%;
-
     --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
-
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
-
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 20% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
-
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
@@ -80,57 +63,67 @@ html {
   }
 }
 
-.ce-inline-tool,
-.ce-inline-tool--active,
-.ce-inline-toolbar,
-.ce-inline-toolbar--left-oriented,
-.ce-inline-toolbar--showed,
-.ce-inline-toolbar__dropdown,
-.ce-inline-toolbar__toggler-and-button-wrapper,
-.ce-conversion-toolbar,
-.ce-conversion-toolbar--showed,
-.ce-conversion-toolbar__tools {
-  background-color: var(--background);
-  color: var(--primary);
-  border: none;
+.dark .ce-block--selected .ce-block__content,
+.dark .ce-inline-toolbar,
+.dark .codex-editor--narrow .ce-toolbox,
+.dark .ce-conversion-toolbar,
+.dark .ce-settings,
+.dark .ce-settings__button,
+.dark .ce-toolbar__settings-btn,
+.dark .cdx-button,
+.dark .ce-popover,
+.dark .ce-popover-item,
+.dark .ce-toolbar__plus:hover {
+  background: theme('colors.popover.DEFAULT');
+  color: inherit;
+  border-color: theme('colors.border');
 }
 
-.ce-toolbar__actions,
-.ce-toolbar__actions--opened {
-  align-items: start;
+.dark .ce-inline-tool,
+.dark .ce-conversion-toolbar__label,
+.dark .ce-toolbox__button,
+.dark .cdx-settings-button,
+.dark .ce-toolbar__plus {
+  color: inherit;
 }
 
-.cdx-block,
-.ce-header,
-.inlineToolButton,
-.ce-toolbar__plus,
-.ce-toolbar__settings-btn,
-.ce-popover__search {
-  background-color: var(--background);
-  color: var(--primary);
+.dark .ce-popover-item__icon,
+.dark .ce-conversion-tool__icon {
+  background-color: theme('colors.muted.DEFAULT');
+  box-shadow: none;
 }
 
-.ce-toolbar__plus:hover,
-.ce-toolbar__settings-btn:hover,
-.cdx-loader,
-.cdx-button {
-  background-color: var(--background);
-  color: var(--primary);
+.dark .cdx-search-field {
+  border-color: theme('colors.border');
+  background: theme('colors.input');
+  color: inherit;
 }
 
-.cdx-button:hover {
-  background-color: #2f2f2f;
+.dark ::selection {
+  background: theme('colors.accent.DEFAULT');
 }
 
-.ce-popover,
-.ce-popover-item,
-.ce-popover-item__icon,
-.ce-popover-items,
-.ce-popover-item:hover {
-  --color-background-item-hover: #b32a2a;
-  background-color: var(--background);
-  color: var(--primary);
-  border: none;
+.dark .cdx-settings-button:hover,
+.dark .ce-settings__button:hover,
+.dark .ce-toolbox__button--active,
+.dark .ce-toolbox__button:hover,
+.dark .cdx-button:hover,
+.dark .ce-inline-toolbar__dropdown:hover,
+.dark .ce-inline-tool:hover,
+.dark .ce-popover-item:hover,
+.dark .ce-conversion-tool:hover,
+.dark .ce-toolbar__settings-btn:hover {
+  background-color: theme('colors.accent.DEFAULT');
+  color: theme('colors.accent.foreground');
+}
+
+.dark .cdx-notify--error {
+  background: theme('colors.destructive.DEFAULT') !important;
+}
+
+.dark .cdx-notify__cross::after,
+.dark .cdx-notify__cross::before {
+  background: white;
 }
 
 h1.ce-header {

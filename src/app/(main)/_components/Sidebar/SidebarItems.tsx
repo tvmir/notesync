@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { Notebook } from '@/types/supabase';
 import { FC, useEffect, useMemo, useState } from 'react';
 import NewNotebook from '../Notebooks/NewNotebook';
@@ -27,6 +27,7 @@ import {
 import Link from 'next/link';
 import { useModal } from '@/lib/providers/use-modal-state';
 import { useMobile } from '@/lib/providers/use-mobile-state';
+import { Separator } from '@/components/ui/separator';
 
 interface SidebarItemsProps {
   userNotebooks: Notebook[] | [];
@@ -94,15 +95,22 @@ const SidebarItems: FC<SidebarItemsProps> = ({
       >
         <div>
           <Link href={`/dashboard/${notebookId}`}>
-            <p className="hidden text-primary text-xl font-medium md:block pt-3">
+            <p className="hidden text-primary text-xl font-medium md:block pt-2">
               notesync
             </p>
           </Link>
+          <div className="mt-8 w-full text-primary">
+            <span className="text-primary/70 text-sm capitalize">
+              Notebooks
+            </span>
+            <Separator className="mt-2" />
+          </div>
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="w-full my-4 flex items-left justify-between"
-                variant="subtle"
+                className="w-full my-4 flex justify-between"
+                variant="outline"
+                size="nb"
               >
                 <div className="flex flex-col">{defaultNotebook?.title}</div>
                 <div>
@@ -110,16 +118,25 @@ const SidebarItems: FC<SidebarItemsProps> = ({
                 </div>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 h-[228px] border mt-4 ml-2 rounded-lg z-[200]">
-              {
-                <Command className="rounded-lg">
-                  <CommandInput placeholder="Search Notebooks..." />
-                  <CommandList className="pb-2">
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="Notebooks">
-                      {userNotebooks.map((notebook) => (
-                        <CommandItem key={notebook.id}>
-                          {defaultOpen ? (
+            <PopoverContent className="w-64 border mt-4 ml-2 rounded-lg z-[200]">
+              <Command className="rounded-lg">
+                <CommandInput placeholder="Search Notebooks..." />
+                <CommandList className="pb-2">
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup heading="Notebooks">
+                    {userNotebooks.map((notebook: Notebook) => (
+                      <CommandItem key={notebook.id}>
+                        {defaultOpen ? (
+                          <Link
+                            href={`/dashboard/${notebook.id}`}
+                            className="flex gap-4 w-full h-full"
+                          >
+                            <div className="flex flex-col flex-1">
+                              {notebook.title}
+                            </div>
+                          </Link>
+                        ) : (
+                          <SheetClose asChild>
                             <Link
                               href={`/dashboard/${notebook.id}`}
                               className="flex gap-4 w-full h-full"
@@ -128,39 +145,29 @@ const SidebarItems: FC<SidebarItemsProps> = ({
                                 {notebook.title}
                               </div>
                             </Link>
-                          ) : (
-                            <SheetClose asChild>
-                              <Link
-                                href={`/dashboard/${notebook.id}`}
-                                className="flex gap-4 w-full h-full"
-                              >
-                                <div className="flex flex-col flex-1">
-                                  {notebook.title}
-                                </div>
-                              </Link>
-                            </SheetClose>
-                          )}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                  <Button
-                    onClick={() => {
-                      setOpen(
-                        <CreationDialog
-                          header="Create A Notebook"
-                          content={<NewNotebook />}
-                          description="Take organization to the next level."
-                        />
-                      );
-                    }}
-                    className="w-full flex gap-2"
-                  >
-                    <PlusCircleIcon size={15} />
-                    Create a Notebook
-                  </Button>
-                </Command>
-              }
+                          </SheetClose>
+                        )}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+                <Button
+                  onClick={() => {
+                    setOpen(
+                      <CreationDialog
+                        header="Create a Notebook"
+                        content={<NewNotebook />}
+                        description="Enhance your organization with designated notebooks that enable you to
+                        manage all your notes in folders and files."
+                      />
+                    );
+                  }}
+                  className="w-full flex gap-2"
+                >
+                  <PlusCircleIcon size={15} />
+                  Create a Notebook
+                </Button>
+              </Command>
             </PopoverContent>
           </Popover>
           {children}

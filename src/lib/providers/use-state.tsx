@@ -315,6 +315,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (!folderId || !notebookId) return;
+
     const getFilesFromFolder = async () => {
       const { data, error } = await fetchFiles(folderId);
 
@@ -333,9 +334,9 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
     getFilesFromFolder();
   }, [folderId, notebookId]);
 
-  useEffect(() => {
-    console.log('App State Changed', state);
-  }, [state]);
+  // useEffect(() => {
+  //   console.log('App State Changed', state);
+  // }, [state]);
 
   return (
     <AppStateContext.Provider
@@ -350,8 +351,10 @@ export default AppStateProvider;
 
 export const useAppState = () => {
   const context = useContext(AppStateContext);
+
   if (!context) {
     throw new Error('useAppState must be used within an AppStateProvider');
   }
+
   return context;
 };

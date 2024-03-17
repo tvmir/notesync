@@ -38,8 +38,6 @@ const NewNotebook: FC = () => {
         title: 'Success',
         description: 'Notebook has been created successfully!',
       });
-
-      router.refresh();
     }
     setIsLoading(false);
   };
@@ -65,6 +63,7 @@ const NewNotebook: FC = () => {
         variant={'default'}
         isLoading={isLoading}
         onClick={createNewNotebook}
+        className="w-full"
       >
         Create
       </Button>

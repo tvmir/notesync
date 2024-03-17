@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppState } from '@/lib/providers/state';
+import { useAppState } from '@/lib/providers/use-state';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { FC, useEffect, useState } from 'react';
 
@@ -9,7 +9,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
-  const [timeSpentOnPage, setTimeSpentOnPage] = useState(0);
+  const [timeSpentOnPage, setTimeSpentOnPage] = useState<number>(0);
   const supabase = createClientComponentClient();
 
   const { notebookId } = useAppState();
@@ -17,8 +17,8 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
   // Updating the time the user has spent on the application
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimeSpentOnPage((prevTime) => prevTime + 30000);
-    }, 30000); // incremented every 30 second
+      setTimeSpentOnPage((prevTime) => prevTime + 60);
+    }, 60000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -38,7 +38,7 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
     };
 
     updateTimeSpent();
-  }, [timeSpentOnPage]);
+  }, [timeSpentOnPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <main className="flex h-screen">{children}</main>;
 };
