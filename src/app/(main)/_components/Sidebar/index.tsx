@@ -39,11 +39,7 @@ const Sidebar: FC<SidebarProps> = async ({ params }) => {
         )}
       >
         <div>
-          <ScrollArea
-            className="overflow-scroll relative
-          h-[450px]
-        "
-          >
+          <ScrollArea className="hide-scrollbar h-[450px]">
             <div className="pointer-events-none w-full absolute bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-40" />
             <FoldersList
               folders={notebookFolders || []}

@@ -7,6 +7,15 @@ html {
   height: 100%;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
