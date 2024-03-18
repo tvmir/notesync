@@ -13,6 +13,7 @@ interface PlayerState {
   ids: string[];
   activeId?: string;
   likedSongs?: string[];
+  volume?: number;
 }
 
 type PlayerAction =
@@ -20,7 +21,8 @@ type PlayerAction =
   | { type: 'SET_IDS'; payload: string[] }
   | { type: 'RESET' }
   | { type: 'LIKE_SONG'; payload: string }
-  | { type: 'REMOVE_LIKE_SONG'; payload: string };
+  | { type: 'REMOVE_LIKE_SONG'; payload: string }
+  | { type: 'SET_VOLUME'; payload: number };
 
 interface PlayerContextProps {
   state: PlayerState;
@@ -50,6 +52,11 @@ const playerReducer = (
         ...state,
         likedSongs: state.likedSongs!.filter((id) => id !== action.payload),
       };
+    case 'SET_VOLUME':
+      return {
+        ...state,
+        volume: action.payload,
+      };
     default:
       return state;
   }
@@ -62,6 +69,7 @@ export const PlayerProvider: FC<{ children: React.ReactNode }> = ({
     ids: [],
     activeId: undefined,
     likedSongs: [],
+    volume: 1,
   });
 
   // useEffect(() => {

@@ -24,7 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn('bg-background dark', inter.className)}>
+      <body
+        className={cn('bg-background dark hide-scrollbar', inter.className)}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

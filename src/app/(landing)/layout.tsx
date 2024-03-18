@@ -5,7 +5,7 @@ interface HomeLayoutProps {
 }
 
 const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
-  return <main>{children}</main>;
+  return <main className="overflow-y-auto hide-scrollbar">{children}</main>;
 };
 
 export default HomeLayout;

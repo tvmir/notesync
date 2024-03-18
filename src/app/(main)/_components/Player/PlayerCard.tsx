@@ -25,10 +25,9 @@ interface PlayerCardProps {
 const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
   const { state, dispatch } = usePlayer();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(1);
 
   const PlayIcon = isPlaying ? PauseCircle : PlayCircle;
-  const VolumeSliderIcon = volume === 0 ? VolumeX : Volume2;
+  const VolumeSliderIcon = state.volume === 0 ? VolumeX : Volume2;
 
   // Checks the song ID of the previous song in the list, if it's the first song in the playlist nothing happens
   const playPreviousSong = () => {
@@ -53,7 +52,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
 
   // Responsible for the player functionality
   const [play, { pause, sound }] = useSound(songFile, {
-    volume: volume,
+    volume: state.volume,
     onplay: () => setIsPlaying(true),
     onend: () => {
       setIsPlaying(false);
@@ -101,13 +100,13 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
     });
   };
 
-  // Handles mute/unmute
+  // Volume handlers
   const toggleVolumeMute = () => {
-    if (volume === 0) {
-      setVolume(1);
-    } else {
-      setVolume(0);
-    }
+    dispatch({ type: 'SET_VOLUME', payload: state.volume === 0 ? 1 : 0 });
+  };
+
+  const handleVolumeChange = (value: number) => {
+    dispatch({ type: 'SET_VOLUME', payload: value });
   };
 
   return (
@@ -135,14 +134,14 @@ const PlayerCard: FC<PlayerCardProps> = ({ song, songFile }) => {
           onClick={playNextSong}
         />
       </div>
-      <div className="flex justify-between">
-        <div className="flex items-center gap-x-2 w-[95px]">
+      <div className="flex justify-between pt-1">
+        <div className="flex items-center gap-x-2 w-[89px]">
           <VolumeSliderIcon
             className="cursor-pointer"
             onClick={toggleVolumeMute}
             size={20}
           />
-          <CustomSlider value={volume} onChange={(value) => setVolume(value)} />
+          <CustomSlider value={state.volume} onChange={handleVolumeChange} />
         </div>
         <IsLikedButton songId={song.id} />
       </div>
