@@ -66,7 +66,6 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
 
   // Duration times
   const durations = [
-    { id: 1, label: '1 minute' },
     { id: 15, label: '15 minutes' },
     { id: 20, label: '20 minutes' },
     { id: 25, label: '25 minutes' },
@@ -78,7 +77,6 @@ const PomodoroTimer: FC<PomodoroProps> = ({ notebookId }) => {
   // Break times
   const breaks: Timer[] = useMemo(
     () => [
-      { id: 1, label: '1 minute' },
       { id: 5, label: '5 minutes' },
       { id: 10, label: '10 minutes' },
       { id: 15, label: '15 minutes' },
