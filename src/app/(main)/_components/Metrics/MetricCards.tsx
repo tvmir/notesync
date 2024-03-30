@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppState } from '@/lib/providers/use-state';
 
@@ -10,6 +10,24 @@ interface MetricCardsProps {
 
 const MetricCards: FC<MetricCardsProps> = ({ notebookId }) => {
   const { state } = useAppState();
+  const initialTimeSpent = parseInt(
+    localStorage.getItem('timeSpent') || '0',
+    10
+  );
+
+  const [timeSpent, setTimeSpent] = useState(initialTimeSpent);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeSpent((prevTime) => {
+        const updatedTime = prevTime + 60;
+        localStorage.setItem('timeSpent', updatedTime.toString());
+        return updatedTime;
+      });
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const currentNotebook = state.notebooks.find(
     (notebook) => notebook.id === notebookId
@@ -39,17 +57,13 @@ const MetricCards: FC<MetricCardsProps> = ({ notebookId }) => {
         </CardHeader>
         <CardContent>
           <div className="text-xl font-semibold">
-            {Math.floor(currentNotebook?.timeSpent! / 60) == 1
+            {Math.floor(timeSpent / 60) == 1
               ? '1 MINUTE'
-              : `${Math.floor(currentNotebook?.timeSpent! / 60)} MINUTES`}
+              : `${Math.floor(timeSpent / 60)} MINUTES`}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            +
-            {(
-              (Math.floor(currentNotebook?.timeSpent! / 60) / 60) *
-              100
-            ).toFixed(2)}
-            % from last week
+            +{((Math.floor(timeSpent / 60) / 60) * 100).toFixed(2)}% from last
+            week
           </p>
         </CardContent>
       </Card>

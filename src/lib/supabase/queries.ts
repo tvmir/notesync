@@ -9,15 +9,8 @@ import {
   songs,
   tasks,
 } from '../../../migrations/schema';
-import { and, eq } from 'drizzle-orm';
-import {
-  File,
-  Folder,
-  LikedSong,
-  Notebook,
-  Song,
-  Task,
-} from '@/types/supabase';
+import { eq } from 'drizzle-orm';
+import { File, Folder, Notebook, Task } from '@/types/supabase';
 
 export const createNotebook = async (notebook: Notebook) => {
   try {
@@ -32,7 +25,7 @@ export const createNotebook = async (notebook: Notebook) => {
 
     return {
       data: null,
-      error: 'Error: Unable to create folder',
+      error: 'Error: Unable to create notebook',
     };
   }
 };
