@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Recommendation Model
+[https://github.com/tvmir/notesync_model](https://github.com/tvmir/notesync_model)
 
 ## Getting Started
 
